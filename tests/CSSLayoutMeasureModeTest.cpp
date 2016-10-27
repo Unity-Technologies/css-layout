@@ -36,17 +36,28 @@ static CSSSize _measure(void *context,
   (&constraints[currentIndex])->heightMode = heightMode;
   constraintList->length = currentIndex + 1;
 
-  return CSSSize {
-      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,
-      .height = heightMode == CSSMeasureModeUndefined ? 10 : width,
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  return CSSSize {
+//      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,
+//      .height = heightMode == CSSMeasureModeUndefined ? 10 : width,
+//  };
+  CSSSize size;
+  size.width = widthMode == CSSMeasureModeUndefined ? 10 : width;
+  size.height = heightMode == CSSMeasureModeUndefined ? 10 : width;
+  return size;
+  // END_UNITY
 }
 
 TEST(CSSLayoutTest, exactly_measure_stretched_child_column) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetWidth(root, 100);
@@ -69,10 +80,15 @@ TEST(CSSLayoutTest, exactly_measure_stretched_child_column) {
 }
 
 TEST(CSSLayoutTest, exactly_measure_stretched_child_row) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetFlexDirection(root, CSSFlexDirectionRow);
@@ -96,10 +112,15 @@ TEST(CSSLayoutTest, exactly_measure_stretched_child_row) {
 }
 
 TEST(CSSLayoutTest, at_most_main_axis_column) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetWidth(root, 100);
@@ -122,10 +143,15 @@ TEST(CSSLayoutTest, at_most_main_axis_column) {
 }
 
 TEST(CSSLayoutTest, at_most_cross_axis_column) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetAlignItems(root, CSSAlignFlexStart);
@@ -149,10 +175,15 @@ TEST(CSSLayoutTest, at_most_cross_axis_column) {
 }
 
 TEST(CSSLayoutTest, at_most_main_axis_row) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetFlexDirection(root, CSSFlexDirectionRow);
@@ -176,10 +207,15 @@ TEST(CSSLayoutTest, at_most_main_axis_row) {
 }
 
 TEST(CSSLayoutTest, at_most_cross_axis_row) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetFlexDirection(root, CSSFlexDirectionRow);
@@ -204,10 +240,15 @@ TEST(CSSLayoutTest, at_most_cross_axis_row) {
 }
 
 TEST(CSSLayoutTest, flex_child) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetHeight(root, 100);
@@ -233,10 +274,15 @@ TEST(CSSLayoutTest, flex_child) {
 }
 
 TEST(CSSLayoutTest, flex_child_with_flex_basis) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetHeight(root, 100);
@@ -260,10 +306,15 @@ TEST(CSSLayoutTest, flex_child_with_flex_basis) {
 }
 
 TEST(CSSLayoutTest, overflow_scroll_column) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetAlignItems(root, CSSAlignFlexStart);
@@ -291,10 +342,15 @@ TEST(CSSLayoutTest, overflow_scroll_column) {
 }
 
 TEST(CSSLayoutTest, overflow_scroll_row) {
-  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
-    .length = 0,
-    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  struct _MeasureConstraintList constraintList = _MeasureConstraintList {
+//    .length = 0,
+//    .constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint)),
+//  };
+  struct _MeasureConstraintList constraintList;
+  constraintList.length = 0;
+  constraintList.constraints = (struct _MeasureConstraint *) malloc(10 * sizeof(struct _MeasureConstraint));
+  // END_UNITY
 
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetAlignItems(root, CSSAlignFlexStart);

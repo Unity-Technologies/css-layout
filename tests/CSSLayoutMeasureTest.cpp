@@ -17,10 +17,17 @@ static CSSSize _measure(void *context,
                         CSSMeasureMode heightMode) {
   int *measureCount = (int *)context;
   *measureCount = *measureCount + 1;
-  return CSSSize {
-      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,
-      .height = heightMode == CSSMeasureModeUndefined ? 10 : width,
-  };
+  
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  return CSSSize {
+//      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,
+//      .height = heightMode == CSSMeasureModeUndefined ? 10 : width,
+//  };
+  CSSSize size;
+  size.width = widthMode == CSSMeasureModeUndefined ? 10 : width;
+  size.height = heightMode == CSSMeasureModeUndefined ? 10 : width;
+  return size;
+  // END_UNITY
 }
 
 TEST(CSSLayoutTest, ignore_measure_on_non_leaf_node) {

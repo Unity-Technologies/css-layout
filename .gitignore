@@ -9,3 +9,11 @@
 
 # Visual studio code
 .vscode
+
+# Unity stuff
+/platforms/VS2010/bin/
+*.opensdf
+*.sdf
+*.suo
+*.vcxproj.filters
+*.vcxproj.user

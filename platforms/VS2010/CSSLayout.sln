@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSSLayout", "CSSLayout\CSSLayout.vcxproj", "{DBF8C164-E459-46F1-94F5-EEA80BBC7E52}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "tests\tests.vcxproj", "{836D1042-2131-4501-87FF-B9CFD369C2B0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBF8C164-E459-46F1-94F5-EEA80BBC7E52} = {DBF8C164-E459-46F1-94F5-EEA80BBC7E52}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DBF8C164-E459-46F1-94F5-EEA80BBC7E52}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DBF8C164-E459-46F1-94F5-EEA80BBC7E52}.Debug|Win32.Build.0 = Debug|Win32
+		{DBF8C164-E459-46F1-94F5-EEA80BBC7E52}.Release|Win32.ActiveCfg = Release|Win32
+		{DBF8C164-E459-46F1-94F5-EEA80BBC7E52}.Release|Win32.Build.0 = Release|Win32
+		{836D1042-2131-4501-87FF-B9CFD369C2B0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{836D1042-2131-4501-87FF-B9CFD369C2B0}.Debug|Win32.Build.0 = Debug|Win32
+		{836D1042-2131-4501-87FF-B9CFD369C2B0}.Release|Win32.ActiveCfg = Release|Win32
+		{836D1042-2131-4501-87FF-B9CFD369C2B0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -18,10 +18,16 @@ static CSSSize _measureMax(void *context,
 
   int *measureCount = (int *)context;
   *measureCount = *measureCount + 1;
-  return CSSSize {
-      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,
-      .height = heightMode == CSSMeasureModeUndefined ? 10 : height,
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  return CSSSize {
+//      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,
+//      .height = heightMode == CSSMeasureModeUndefined ? 10 : height,
+//  };
+  CSSSize size;
+  size.width = widthMode == CSSMeasureModeUndefined ? 10 : width;
+  size.height = heightMode == CSSMeasureModeUndefined ? 10 : height;
+  return size;
+  // END_UNITY
 }
 
 static CSSSize _measureMin(void *context,
@@ -32,10 +38,16 @@ static CSSSize _measureMin(void *context,
 
   int *measureCount = (int *)context;
   *measureCount = *measureCount + 1;
-  return CSSSize {
-      .width = widthMode == CSSMeasureModeUndefined || (widthMode == CSSMeasureModeAtMost && width > 10) ? 10 : width,
-      .height = heightMode == CSSMeasureModeUndefined || (heightMode == CSSMeasureModeAtMost && height > 10) ? 10 : height,
-  };
+  // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
+//  return CSSSize {
+//      .width = widthMode == CSSMeasureModeUndefined || (widthMode == CSSMeasureModeAtMost && width > 10) ? 10 : width,
+//      .height = heightMode == CSSMeasureModeUndefined || (heightMode == CSSMeasureModeAtMost && height > 10) ? 10 : height,
+//  };
+  CSSSize size;
+  size.width = widthMode == CSSMeasureModeUndefined || (widthMode == CSSMeasureModeAtMost && width > 10) ? 10 : width;
+  size.height = heightMode == CSSMeasureModeUndefined || (heightMode == CSSMeasureModeAtMost && height > 10) ? 10 : height;
+  return size;
+  // END_UNITY
 }
 
 TEST(CSSLayoutTest, measure_once_single_flexible_child) {
