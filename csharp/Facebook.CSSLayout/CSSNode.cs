@@ -22,7 +22,6 @@ namespace Facebook.CSSLayout
         private List<CSSNode> _children;
         private MeasureFunction _measureFunction;
         private CSSMeasureFunc _cssMeasureFunc;
-        private MeasureOutput _measureOutput;
         private object _data;
 
         public CSSNode()
@@ -509,16 +508,7 @@ namespace Facebook.CSSLayout
         public void SetMeasureFunction(MeasureFunction measureFunction)
         {
             _measureFunction = measureFunction;
-            if (measureFunction != null)
-            {
-                _cssMeasureFunc = MeasureInternal;
-                _measureOutput = new MeasureOutput();
-            }
-            else
-            {
-                _cssMeasureFunc = null;
-                _measureOutput = null;
-            }
+            _cssMeasureFunc = measureFunction != null ? MeasureInternal : (CSSMeasureFunc)null;
             Native.CSSNodeSetMeasureFunc(_cssNode, _cssMeasureFunc);
         }
 
@@ -532,7 +522,7 @@ namespace Facebook.CSSLayout
         }
 
         private CSSSize MeasureInternal(
-            IntPtr context,
+            IntPtr node,
             float width,
             CSSMeasureMode widthMode,
             float height,
@@ -543,9 +533,8 @@ namespace Facebook.CSSLayout
                 throw new InvalidOperationException("Measure function is not defined.");
             }
 
-            _measureFunction(this, width, widthMode, height, heightMode, _measureOutput);
-
-            return new CSSSize { width = _measureOutput.Width, height = _measureOutput.Height };
+            long output = _measureFunction(this, width, widthMode, height, heightMode);
+            return new CSSSize { width = MeasureOutput.GetWidth(output), height = MeasureOutput.GetHeight(output) };
         }
 
         public string Print(CSSPrintOptions options =

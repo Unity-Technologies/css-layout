@@ -11,9 +11,6 @@
 
 #import <objc/runtime.h>
 
-static void _attachNodesRecursive(UIView *view);
-static void _updateFrameRecursive(UIView *view);
-
 @interface CSSNodeBridge : NSObject
 @property (nonatomic, assign) CSSNodeRef cnode;
 @end
@@ -206,7 +203,7 @@ static void _updateFrameRecursive(UIView *view);
 #pragma mark - Private
 
 static CSSSize _measure(
-  void *context,
+  CSSNodeRef node,
   float width,
   CSSMeasureMode widthMode,
   float height,
@@ -222,7 +219,7 @@ static CSSSize _measure(
       };
   }
 
-  UIView *view = (__bridge UIView*) context;
+  UIView *view = (__bridge UIView*) CSSNodeGetContext(node);
   const CGSize sizeThatFits = [view sizeThatFits:(CGSize) {
     .width = widthMode == CSSMeasureModeUndefined ? CGFLOAT_MAX : width,
     .height = heightMode == CSSMeasureModeUndefined ? CGFLOAT_MAX : height,
@@ -233,8 +230,6 @@ static CSSSize _measure(
     .height = useExactHeight ? height : sizeThatFits.height,
   };
 }
-
-@end
 
 static void _attachNodesRecursive(UIView *view) {
   CSSNodeRef node = [view cssNode];
@@ -290,3 +285,5 @@ static void _updateFrameRecursive(UIView *view) {
     }
   }
 }
+
+@end
