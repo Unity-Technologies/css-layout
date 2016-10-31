@@ -17,7 +17,11 @@
 #define isnan _isnan
 
 /* define fmaxf if < VC12 */
-#if _MSC_VER < 1800
+// BEGIN_UNITY @joce 10-26-2016 CompileForN3DS
+//#if _MSC_VER < 1800
+#endif
+#if (defined(_MSC_VER) && _MSC_VER < 1800) || defined(_N3DS)
+// END_UNITY
 __forceinline const float fmaxf(const float a, const float b) {
   return (a > b) ? a : b;
 }
@@ -28,7 +32,16 @@ __forceinline const float fminf(const float a, const float b) {
 }
 // END_UNITY
 #endif
+// BEGIN_UNITY @joce 10-26-2016 CompileForN3DS
+//#endif
+// END_UNITY
+
+// BEGIN_UNITY @joce 10-31-2016 CompileForMacOS
+#ifdef __APPLE__
+#incldue <cmath>
+#define isnan std::isnan
 #endif
+// END_UNITY
 
 typedef struct CSSCachedMeasurement {
   float availableWidth;
