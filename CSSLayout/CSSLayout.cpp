@@ -297,7 +297,10 @@ CSSNodeRef CSSNodeGetChild(const CSSNodeRef node, const uint32_t index) {
   return CSSNodeListGet(node->children, index);
 }
 
-inline uint32_t CSSNodeChildCount(const CSSNodeRef node) {
+// BEGIN_UNITY @joce 11-01-2016 CompileForVS2010
+//inline uint32_t CSSNodeChildCount(const CSSNodeRef node) {
+uint32_t CSSNodeChildCount(const CSSNodeRef node) {
+// END_UNITY
   return CSSNodeListCount(node->children);
 }
 
@@ -441,7 +444,10 @@ bool layoutNodeInternal(const CSSNodeRef node,
                         const bool performLayout,
                         const char *reason);
 
-inline bool CSSValueIsUndefined(const float value) {
+// BEGIN_UNITY @joce 11-01-2016 CompileForVS2010
+//inline bool CSSValueIsUndefined(const float value) {
+bool CSSValueIsUndefined(const float value) {
+// END_UNITY
 // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
 //  return isnan(value);
   return isnan(value) != 0;
