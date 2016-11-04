@@ -74,10 +74,16 @@ typedef enum CSSPositionType {
   CSSPositionTypeAbsolute,
 } CSSPositionType;
 
-typedef enum CSSWrapType {
-  CSSWrapTypeNoWrap,
-  CSSWrapTypeWrap,
-} CSSWrapType;
+// BEGIN_UNITY @joce 11-01-2016 CompileForC#
+// typedef enum CSSWrapType {
+//   CSSWrapTypeNoWrap,
+//   CSSWrapTypeWrap,
+// } CSSWrapType;
+typedef enum CSSWrap {
+  CSSWrapNoWrap,
+  CSSWrapWrap,
+} CSSWrap;
+// END_UNITY
 
 typedef enum CSSMeasureMode {
   CSSMeasureModeUndefined,
@@ -194,7 +200,10 @@ CSS_NODE_STYLE_PROPERTY(CSSAlign, AlignContent, alignContent);
 CSS_NODE_STYLE_PROPERTY(CSSAlign, AlignItems, alignItems);
 CSS_NODE_STYLE_PROPERTY(CSSAlign, AlignSelf, alignSelf);
 CSS_NODE_STYLE_PROPERTY(CSSPositionType, PositionType, positionType);
-CSS_NODE_STYLE_PROPERTY(CSSWrapType, FlexWrap, flexWrap);
+// BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//CSS_NODE_STYLE_PROPERTY(CSSWrapType, FlexWrap, flexWrap);
+CSS_NODE_STYLE_PROPERTY(CSSWrap, FlexWrap, flexWrap);
+// END_UNITY
 CSS_NODE_STYLE_PROPERTY(CSSOverflow, Overflow, overflow);
 
 WIN_EXPORT void CSSNodeStyleSetFlex(const CSSNodeRef node, const float flex);

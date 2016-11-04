@@ -84,7 +84,10 @@ typedef struct CSSStyle {
   CSSAlign alignItems;
   CSSAlign alignSelf;
   CSSPositionType positionType;
-  CSSWrapType flexWrap;
+  // BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//  CSSWrapType flexWrap;
+  CSSWrap flexWrap;
+// END_UNITY
   CSSOverflow overflow;
   float flex;
   float flexGrow;
@@ -406,7 +409,10 @@ CSS_NODE_STYLE_PROPERTY_IMPL(CSSAlign, AlignContent, alignContent, alignContent)
 CSS_NODE_STYLE_PROPERTY_IMPL(CSSAlign, AlignItems, alignItems, alignItems);
 CSS_NODE_STYLE_PROPERTY_IMPL(CSSAlign, AlignSelf, alignSelf, alignSelf);
 CSS_NODE_STYLE_PROPERTY_IMPL(CSSPositionType, PositionType, positionType, positionType);
-CSS_NODE_STYLE_PROPERTY_IMPL(CSSWrapType, FlexWrap, flexWrap, flexWrap);
+// BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//CSS_NODE_STYLE_PROPERTY_IMPL(CSSWrapType, FlexWrap, flexWrap, flexWrap);
+CSS_NODE_STYLE_PROPERTY_IMPL(CSSWrap, FlexWrap, flexWrap, flexWrap);
+// END_UNITY
 CSS_NODE_STYLE_PROPERTY_IMPL(CSSOverflow, Overflow, overflow, overflow);
 
 CSS_NODE_STYLE_PROPERTY_SETTER_IMPL(float, FlexGrow, flexGrow, flexGrow);
@@ -1390,7 +1396,10 @@ static void layoutNodeImpl(const CSSNodeRef node,
   const CSSFlexDirection crossAxis = getCrossFlexDirection(mainAxis, direction);
   const bool isMainAxisRow = isRowDirection(mainAxis);
   const CSSJustify justifyContent = node->style.justifyContent;
-  const bool isNodeFlexWrap = node->style.flexWrap == CSSWrapTypeWrap;
+  // BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//  const bool isNodeFlexWrap = node->style.flexWrap == CSSWrapTypeWrap;
+  const bool isNodeFlexWrap = node->style.flexWrap == CSSWrapWrap;
+  // END_UNITY
 
   CSSNodeRef firstAbsoluteChild = NULL;
   CSSNodeRef currentAbsoluteChild = NULL;
