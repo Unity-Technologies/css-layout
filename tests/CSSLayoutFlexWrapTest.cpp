@@ -45,7 +45,10 @@
 
 TEST(CSSLayoutTest, wrap_column) {
   const CSSNodeRef root = CSSNodeNew();
-  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  // BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  CSSNodeStyleSetFlexWrap(root, CSSWrapWrap);
+  // END_UNITY
   CSSNodeStyleSetHeight(root, 100);
 
   const CSSNodeRef root_child0 = CSSNodeNew();
@@ -127,7 +130,10 @@ TEST(CSSLayoutTest, wrap_column) {
 TEST(CSSLayoutTest, wrap_row) {
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetFlexDirection(root, CSSFlexDirectionRow);
-  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  // BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  CSSNodeStyleSetFlexWrap(root, CSSWrapWrap);
+  // END_UNITY
   CSSNodeStyleSetWidth(root, 100);
 
   const CSSNodeRef root_child0 = CSSNodeNew();
@@ -210,7 +216,10 @@ TEST(CSSLayoutTest, wrap_row_align_items_flex_end) {
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetFlexDirection(root, CSSFlexDirectionRow);
   CSSNodeStyleSetAlignItems(root, CSSAlignFlexEnd);
-  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  // BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  CSSNodeStyleSetFlexWrap(root, CSSWrapWrap);
+  // END_UNITY
   CSSNodeStyleSetWidth(root, 100);
 
   const CSSNodeRef root_child0 = CSSNodeNew();
@@ -293,7 +302,10 @@ TEST(CSSLayoutTest, wrap_row_align_items_center) {
   const CSSNodeRef root = CSSNodeNew();
   CSSNodeStyleSetFlexDirection(root, CSSFlexDirectionRow);
   CSSNodeStyleSetAlignItems(root, CSSAlignCenter);
-  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  // BEGIN_UNITY @joce 11-01-2016 CompileForC#
+//  CSSNodeStyleSetFlexWrap(root, CSSWrapTypeWrap);
+  CSSNodeStyleSetFlexWrap(root, CSSWrapWrap);
+  // END_UNITY
   CSSNodeStyleSetWidth(root, 100);
 
   const CSSNodeRef root_child0 = CSSNodeNew();
