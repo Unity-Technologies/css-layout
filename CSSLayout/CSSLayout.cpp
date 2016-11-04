@@ -291,9 +291,10 @@ void CSSNodeInsertChild(const CSSNodeRef node, const CSSNodeRef child, const uin
 }
 
 void CSSNodeRemoveChild(const CSSNodeRef node, const CSSNodeRef child) {
-  CSSNodeListDelete(node->children, child);
-  child->parent = NULL;
-  _CSSNodeMarkDirty(node);
+  if (CSSNodeListDelete(node->children, child) != NULL) {
+    child->parent = NULL;
+    _CSSNodeMarkDirty(node);
+  }
 }
 
 CSSNodeRef CSSNodeGetChild(const CSSNodeRef node, const uint32_t index) {
@@ -2170,7 +2171,7 @@ static inline bool newMeasureSizeIsStricterAndStillValid(CSSMeasureMode sizeMode
          lastSize > size && lastComputedSize <= size;
 }
 
-static bool CSSNodeCanUseCachedMeasurement(const bool isTextNode,
+bool CSSNodeCanUseCachedMeasurement(const bool isTextNode,
                                            const CSSMeasureMode widthMode,
                                            const float width,
                                            const CSSMeasureMode heightMode,
