@@ -13,7 +13,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Facebook.CSSLayout
+// BEGIN_UNITY @joce 11-07-2016 CompileForC#Bindings
+//namespace Facebook.CSSLayout
+namespace UnityEngine.CSSLayout
+// END_UNITY
 {
     public class CSSNode : IEnumerable<CSSNode>
     {

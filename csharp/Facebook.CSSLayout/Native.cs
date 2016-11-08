@@ -7,6 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+// BEGIN_UNITY @joce 11-07-2016 CompileForC#Bindings
+#if false
+// END_UNITY
 using System;
 using System.Runtime.InteropServices;
 
@@ -277,3 +280,6 @@ namespace Facebook.CSSLayout
         #endregion
     }
 }
+// BEGIN_UNITY @joce 11-07-2016 CompileForC#Bindings
+#endif
+// END_UNITY

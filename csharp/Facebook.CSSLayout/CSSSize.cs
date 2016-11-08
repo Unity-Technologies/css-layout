@@ -9,7 +9,10 @@
 
 using System.Runtime.InteropServices;
 
-namespace Facebook.CSSLayout
+// BEGIN_UNITY @joce 11-07-2016 CompileForC#Bindings
+//namespace Facebook.CSSLayout
+namespace UnityEngine.CSSLayout
+// END_UNITY
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct CSSSize
