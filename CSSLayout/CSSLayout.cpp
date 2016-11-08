@@ -37,7 +37,7 @@ __forceinline const float fminf(const float a, const float b) {
 // END_UNITY
 
 // BEGIN_UNITY @joce 10-31-2016 CompileForMacOS
-#ifdef __APPLE__
+#if (defined(__APPLE__) || defined(__linux__))
 #include <cmath>
 #define isnan std::isnan
 #endif
