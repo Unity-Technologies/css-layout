@@ -16,6 +16,10 @@
 #include <float.h>
 #define isnan _isnan
 
+#ifndef __cplusplus
+#define inline __inline
+#endif
+
 /* define fmaxf if < VC12 */
 // BEGIN_UNITY @joce 10-26-2016 CompileForN3DS
 //#if _MSC_VER < 1800
@@ -107,7 +111,6 @@ typedef struct CSSNode {
   CSSLayout layout;
   uint32_t lineIndex;
   bool hasNewLayout;
-  bool isTextNode;
   CSSNodeRef parent;
   CSSNodeListRef children;
   bool isDirty;
@@ -123,16 +126,43 @@ static void _CSSNodeMarkDirty(const CSSNodeRef node);
 
 #ifdef ANDROID
 #include <android/log.h>
-static int _csslayoutAndroidLog(const char *format, ...) {
-  va_list args;
-  va_start(args, format);
-  const int result = __android_log_vprint(ANDROID_LOG_DEBUG, "css-layout", format, args);
-  va_end(args);
+static int _csslayoutAndroidLog(CSSLogLevel level, const char *format, va_list args) {
+  int androidLevel = CSSLogLevelDebug;
+  switch (level) {
+    case CSSLogLevelError: 
+      androidLevel = ANDROID_LOG_ERROR;
+      break;
+    case CSSLogLevelWarn:
+      androidLevel = ANDROID_LOG_WARN;
+      break;
+    case CSSLogLevelInfo:
+      androidLevel = ANDROID_LOG_INFO;
+      break;
+    case CSSLogLevelDebug: 
+      androidLevel = ANDROID_LOG_DEBUG;
+      break;
+    case CSSLogLevelVerbose:
+      androidLevel = ANDROID_LOG_VERBOSE;
+      break;
+  }
+  const int result = __android_log_vprint(androidLevel, "css-layout", format, args);
   return result;
 }
 static CSSLogger gLogger = &_csslayoutAndroidLog;
 #else
-static CSSLogger gLogger = &printf;
+static int _csslayoutDefaultLog(CSSLogLevel level, const char *format, va_list args) {
+  switch (level) {
+    case CSSLogLevelError: 
+      return vfprintf(stderr, format, args);
+    case CSSLogLevelWarn:
+    case CSSLogLevelInfo:
+    case CSSLogLevelDebug: 
+    case CSSLogLevelVerbose:
+    default:
+      return vprintf(format, args);
+  }
+}
+static CSSLogger gLogger = &_csslayoutDefaultLog;
 #endif
 
 static inline float computedEdgeValue(const float edges[CSSEdgeCount],
@@ -283,8 +313,23 @@ static void _CSSNodeMarkDirty(const CSSNodeRef node) {
   }
 }
 
+void CSSNodeSetMeasureFunc(const CSSNodeRef node, CSSMeasureFunc measureFunc) {
+  // You can always NULLify the measure function of a node.
+  if (measureFunc == NULL) {
+    node->measure = NULL;
+  } else {
+    CSS_ASSERT(CSSNodeChildCount(node) == 0, "Cannot set measure function: Nodes with measure functions cannot have children.");
+    node->measure = measureFunc;
+  }
+}
+
+CSSMeasureFunc CSSNodeGetMeasureFunc(const CSSNodeRef node) {
+  return node->measure;
+}
+
 void CSSNodeInsertChild(const CSSNodeRef node, const CSSNodeRef child, const uint32_t index) {
   CSS_ASSERT(child->parent == NULL, "Child already has a parent, it must be removed first.");
+  CSS_ASSERT(node->measure == NULL, "Cannot add child: Nodes with measure functions cannot have children.");
   CSSNodeListInsert(&node->children, child, index);
   child->parent = node;
   _CSSNodeMarkDirty(node);
@@ -309,7 +354,7 @@ uint32_t CSSNodeChildCount(const CSSNodeRef node) {
 }
 
 void CSSNodeMarkDirty(const CSSNodeRef node) {
-  CSS_ASSERT(node->measure != NULL || CSSNodeChildCount(node) > 0,
+  CSS_ASSERT(node->measure != NULL,
              "Only leaf nodes with custom measure functions"
              "should manually mark themselves as dirty");
   _CSSNodeMarkDirty(node);
@@ -398,9 +443,7 @@ void CSSNodeStyleSetFlex(const CSSNodeRef node, const float flex) {
   }
 
 CSS_NODE_PROPERTY_IMPL(void *, Context, context, context);
-CSS_NODE_PROPERTY_IMPL(CSSMeasureFunc, MeasureFunc, measureFunc, measure);
 CSS_NODE_PROPERTY_IMPL(CSSPrintFunc, PrintFunc, printFunc, print);
-CSS_NODE_PROPERTY_IMPL(bool, IsTextnode, isTextNode, isTextNode);
 CSS_NODE_PROPERTY_IMPL(bool, HasNewLayout, hasNewLayout, hasNewLayout);
 
 CSS_NODE_STYLE_PROPERTY_IMPL(CSSDirection, Direction, direction, direction);
@@ -470,19 +513,19 @@ static inline bool eq(const float a, const float b) {
 
 static void indent(const uint32_t n) {
   for (uint32_t i = 0; i < n; i++) {
-    gLogger("  ");
+    CSSLog(CSSLogLevelDebug, "  ");
   }
 }
 
 static void printNumberIfNotZero(const char *str, const float number) {
   if (!eq(number, 0)) {
-    gLogger("%s: %g, ", str, number);
+    CSSLog(CSSLogLevelDebug, "%s: %g, ", str, number);
   }
 }
 
 static void printNumberIfNotUndefined(const char *str, const float number) {
   if (!CSSValueIsUndefined(number)) {
-    gLogger("%s: %g, ", str, number);
+    CSSLog(CSSLogLevelDebug, "%s: %g, ", str, number);
   }
 }
 
@@ -499,66 +542,66 @@ static void _CSSNodePrint(const CSSNodeRef node,
                           const uint32_t level) {
 // END_UNITY
   indent(level);
-  gLogger("{");
+  CSSLog(CSSLogLevelDebug, "{");
 
   if (node->print) {
     node->print(node);
   }
 
   if (options & CSSPrintOptionsLayout) {
-    gLogger("layout: {");
-    gLogger("width: %g, ", node->layout.dimensions[CSSDimensionWidth]);
-    gLogger("height: %g, ", node->layout.dimensions[CSSDimensionHeight]);
-    gLogger("top: %g, ", node->layout.position[CSSEdgeTop]);
-    gLogger("left: %g", node->layout.position[CSSEdgeLeft]);
-    gLogger("}, ");
+    CSSLog(CSSLogLevelDebug, "layout: {");
+    CSSLog(CSSLogLevelDebug, "width: %g, ", node->layout.dimensions[CSSDimensionWidth]);
+    CSSLog(CSSLogLevelDebug, "height: %g, ", node->layout.dimensions[CSSDimensionHeight]);
+    CSSLog(CSSLogLevelDebug, "top: %g, ", node->layout.position[CSSEdgeTop]);
+    CSSLog(CSSLogLevelDebug, "left: %g", node->layout.position[CSSEdgeLeft]);
+    CSSLog(CSSLogLevelDebug, "}, ");
   }
 
   if (options & CSSPrintOptionsStyle) {
     if (node->style.flexDirection == CSSFlexDirectionColumn) {
-      gLogger("flexDirection: 'column', ");
+      CSSLog(CSSLogLevelDebug, "flexDirection: 'column', ");
     } else if (node->style.flexDirection == CSSFlexDirectionColumnReverse) {
-      gLogger("flexDirection: 'column-reverse', ");
+      CSSLog(CSSLogLevelDebug, "flexDirection: 'column-reverse', ");
     } else if (node->style.flexDirection == CSSFlexDirectionRow) {
-      gLogger("flexDirection: 'row', ");
+      CSSLog(CSSLogLevelDebug, "flexDirection: 'row', ");
     } else if (node->style.flexDirection == CSSFlexDirectionRowReverse) {
-      gLogger("flexDirection: 'row-reverse', ");
+      CSSLog(CSSLogLevelDebug, "flexDirection: 'row-reverse', ");
     }
 
     if (node->style.justifyContent == CSSJustifyCenter) {
-      gLogger("justifyContent: 'center', ");
+      CSSLog(CSSLogLevelDebug, "justifyContent: 'center', ");
     } else if (node->style.justifyContent == CSSJustifyFlexEnd) {
-      gLogger("justifyContent: 'flex-end', ");
+      CSSLog(CSSLogLevelDebug, "justifyContent: 'flex-end', ");
     } else if (node->style.justifyContent == CSSJustifySpaceAround) {
-      gLogger("justifyContent: 'space-around', ");
+      CSSLog(CSSLogLevelDebug, "justifyContent: 'space-around', ");
     } else if (node->style.justifyContent == CSSJustifySpaceBetween) {
-      gLogger("justifyContent: 'space-between', ");
+      CSSLog(CSSLogLevelDebug, "justifyContent: 'space-between', ");
     }
 
     if (node->style.alignItems == CSSAlignCenter) {
-      gLogger("alignItems: 'center', ");
+      CSSLog(CSSLogLevelDebug, "alignItems: 'center', ");
     } else if (node->style.alignItems == CSSAlignFlexEnd) {
-      gLogger("alignItems: 'flex-end', ");
+      CSSLog(CSSLogLevelDebug, "alignItems: 'flex-end', ");
     } else if (node->style.alignItems == CSSAlignStretch) {
-      gLogger("alignItems: 'stretch', ");
+      CSSLog(CSSLogLevelDebug, "alignItems: 'stretch', ");
     }
 
     if (node->style.alignContent == CSSAlignCenter) {
-      gLogger("alignContent: 'center', ");
+      CSSLog(CSSLogLevelDebug, "alignContent: 'center', ");
     } else if (node->style.alignContent == CSSAlignFlexEnd) {
-      gLogger("alignContent: 'flex-end', ");
+      CSSLog(CSSLogLevelDebug, "alignContent: 'flex-end', ");
     } else if (node->style.alignContent == CSSAlignStretch) {
-      gLogger("alignContent: 'stretch', ");
+      CSSLog(CSSLogLevelDebug, "alignContent: 'stretch', ");
     }
 
     if (node->style.alignSelf == CSSAlignFlexStart) {
-      gLogger("alignSelf: 'flex-start', ");
+      CSSLog(CSSLogLevelDebug, "alignSelf: 'flex-start', ");
     } else if (node->style.alignSelf == CSSAlignCenter) {
-      gLogger("alignSelf: 'center', ");
+      CSSLog(CSSLogLevelDebug, "alignSelf: 'center', ");
     } else if (node->style.alignSelf == CSSAlignFlexEnd) {
-      gLogger("alignSelf: 'flex-end', ");
+      CSSLog(CSSLogLevelDebug, "alignSelf: 'flex-end', ");
     } else if (node->style.alignSelf == CSSAlignStretch) {
-      gLogger("alignSelf: 'stretch', ");
+      CSSLog(CSSLogLevelDebug, "alignSelf: 'stretch', ");
     }
 
     printNumberIfNotUndefined("flexGrow", CSSNodeStyleGetFlexGrow(node));
@@ -566,11 +609,11 @@ static void _CSSNodePrint(const CSSNodeRef node,
     printNumberIfNotUndefined("flexBasis", CSSNodeStyleGetFlexBasis(node));
 
     if (node->style.overflow == CSSOverflowHidden) {
-      gLogger("overflow: 'hidden', ");
+      CSSLog(CSSLogLevelDebug, "overflow: 'hidden', ");
     } else if (node->style.overflow == CSSOverflowVisible) {
-      gLogger("overflow: 'visible', ");
+      CSSLog(CSSLogLevelDebug, "overflow: 'visible', ");
     } else if (node->style.overflow == CSSOverflowScroll) {
-      gLogger("overflow: 'scroll', ");
+      CSSLog(CSSLogLevelDebug, "overflow: 'scroll', ");
     }
 
     if (eqFour(node->style.margin)) {
@@ -619,7 +662,7 @@ static void _CSSNodePrint(const CSSNodeRef node,
     printNumberIfNotUndefined("minHeight", node->style.minDimensions[CSSDimensionHeight]);
 
     if (node->style.positionType == CSSPositionTypeAbsolute) {
-      gLogger("position: 'absolute', ");
+      CSSLog(CSSLogLevelDebug, "position: 'absolute', ");
     }
 
     printNumberIfNotUndefined("left",
@@ -634,14 +677,14 @@ static void _CSSNodePrint(const CSSNodeRef node,
 
   const uint32_t childCount = CSSNodeListCount(node->children);
   if (options & CSSPrintOptionsChildren && childCount > 0) {
-    gLogger("children: [\n");
+    CSSLog(CSSLogLevelDebug, "children: [\n");
     for (uint32_t i = 0; i < childCount; i++) {
       _CSSNodePrint(CSSNodeGetChild(node, i), options, level + 1);
     }
     indent(level);
-    gLogger("]},\n");
+    CSSLog(CSSLogLevelDebug, "]},\n");
   } else {
-    gLogger("},\n");
+    CSSLog(CSSLogLevelDebug, "},\n");
   }
 }
 
@@ -1025,6 +1068,16 @@ static void computeChildFlexBasis(const CSSNodeRef node,
       childHeightMeasureMode = CSSMeasureModeExactly;
     }
 
+    if (!CSSValueIsUndefined(child->style.maxDimensions[CSSDimensionWidth])) {
+      childWidth = child->style.maxDimensions[CSSDimensionWidth];
+      childWidthMeasureMode = CSSMeasureModeAtMost;
+    }
+
+    if (!CSSValueIsUndefined(child->style.maxDimensions[CSSDimensionHeight])) {
+      childHeight = child->style.maxDimensions[CSSDimensionHeight];
+      childHeightMeasureMode = CSSMeasureModeAtMost;
+    }
+
     // Measure the child
     layoutNodeInternal(child,
                        childWidth,
@@ -1283,7 +1336,7 @@ static void layoutNodeImpl(const CSSNodeRef node,
 
   // For content (text) nodes, determine the dimensions based on the text
   // contents.
-  if (node->measure && CSSNodeChildCount(node) == 0) {
+  if (node->measure) {
     const float innerWidth = availableWidth - marginAxisRow - paddingAndBorderAxisRow;
     const float innerHeight = availableHeight - marginAxisColumn - paddingAndBorderAxisColumn;
 
@@ -1734,6 +1787,16 @@ static void layoutNodeImpl(const CSSNodeRef node,
           }
         }
 
+        if (!CSSValueIsUndefined(currentRelativeChild->style.maxDimensions[CSSDimensionWidth])) {
+          childWidth = currentRelativeChild->style.maxDimensions[CSSDimensionWidth];
+          childWidthMeasureMode = CSSMeasureModeAtMost;
+        }
+
+        if (!CSSValueIsUndefined(currentRelativeChild->style.maxDimensions[CSSDimensionHeight])) {
+          childHeight = currentRelativeChild->style.maxDimensions[CSSDimensionHeight];
+          childHeightMeasureMode = CSSMeasureModeAtMost;
+        }
+
         const bool requiresStretchLayout =
             !isStyleDimDefined(currentRelativeChild, crossAxis) &&
             getAlignItem(node, currentRelativeChild) == CSSAlignStretch;
@@ -1926,6 +1989,16 @@ static void layoutNodeImpl(const CSSNodeRef node,
               childWidth = crossDim;
               childHeight = child->layout.measuredDimensions[CSSDimensionHeight] +
                             getMarginAxis(child, CSSFlexDirectionColumn);
+            }
+
+            if (!CSSValueIsUndefined(child->style.maxDimensions[CSSDimensionWidth])) {
+              childWidth = child->style.maxDimensions[CSSDimensionWidth];
+              childWidthMeasureMode = CSSMeasureModeAtMost;
+            }
+
+            if (!CSSValueIsUndefined(child->style.maxDimensions[CSSDimensionHeight])) {
+              childHeight = child->style.maxDimensions[CSSDimensionHeight];
+              childHeightMeasureMode = CSSMeasureModeAtMost;
             }
 
             // If the child defines a definite size for its cross axis, there's
@@ -2171,8 +2244,7 @@ static inline bool newMeasureSizeIsStricterAndStillValid(CSSMeasureMode sizeMode
          lastSize > size && lastComputedSize <= size;
 }
 
-bool CSSNodeCanUseCachedMeasurement(const bool isTextNode,
-                                           const CSSMeasureMode widthMode,
+bool CSSNodeCanUseCachedMeasurement(const CSSMeasureMode widthMode,
                                            const float width,
                                            const CSSMeasureMode heightMode,
                                            const float height,
@@ -2201,7 +2273,7 @@ bool CSSNodeCanUseCachedMeasurement(const bool isTextNode,
       newMeasureSizeIsStricterAndStillValid(
           widthMode, width - marginRow, lastWidthMode, lastWidth, lastComputedWidth);
 
-  const bool heightIsCompatible = isTextNode || hasSameHeightSpec ||
+  const bool heightIsCompatible = hasSameHeightSpec ||
                                   newSizeIsExactAndMatchesOldMeasuredSize(heightMode,
                                                                           height - marginColumn,
                                                                           lastComputedHeight) ||
@@ -2265,13 +2337,12 @@ bool layoutNodeInternal(const CSSNodeRef node,
   // most
   // expensive to measure, so it's worth avoiding redundant measurements if at
   // all possible.
-  if (node->measure && CSSNodeChildCount(node) == 0) {
+  if (node->measure) {
     const float marginAxisRow = getMarginAxis(node, CSSFlexDirectionRow);
     const float marginAxisColumn = getMarginAxis(node, CSSFlexDirectionColumn);
 
     // First, try to use the layout cache.
-    if (CSSNodeCanUseCachedMeasurement(node->isTextNode,
-                                       widthMeasureMode,
+    if (CSSNodeCanUseCachedMeasurement(widthMeasureMode,
                                        availableWidth,
                                        heightMeasureMode,
                                        availableHeight,
@@ -2287,8 +2358,7 @@ bool layoutNodeInternal(const CSSNodeRef node,
     } else {
       // Try to use the measurement cache.
       for (uint32_t i = 0; i < layout->nextCachedMeasurementsIndex; i++) {
-        if (CSSNodeCanUseCachedMeasurement(node->isTextNode,
-                                           widthMeasureMode,
+        if (CSSNodeCanUseCachedMeasurement(widthMeasureMode,
                                            availableWidth,
                                            heightMeasureMode,
                                            availableHeight,
@@ -2476,6 +2546,13 @@ void CSSNodeCalculateLayout(const CSSNodeRef node,
 
 void CSSLayoutSetLogger(CSSLogger logger) {
   gLogger = logger;
+}
+
+void CSSLog(CSSLogLevel level, const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  gLogger(level, format, args);
+  va_end(args);
 }
 
 #ifdef CSS_ASSERT_FAIL_ENABLED

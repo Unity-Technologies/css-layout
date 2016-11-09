@@ -10,42 +10,46 @@
 #include <CSSLayout/CSSLayout.h>
 #include <gtest/gtest.h>
 
+#if GTEST_HAS_DEATH_TEST
 static CSSSize _measure(CSSNodeRef node,
                         float width,
                         CSSMeasureMode widthMode,
                         float height,
                         CSSMeasureMode heightMode) {
-  int *measureCount = (int *)CSSNodeGetContext(node);
-  *measureCount = *measureCount + 1;
   
   // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
-//  return CSSSize {
-//      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,
-//      .height = heightMode == CSSMeasureModeUndefined ? 10 : width,
-//  };
   CSSSize size;
-  size.width = widthMode == CSSMeasureModeUndefined ? 10 : width;
-  size.height = heightMode == CSSMeasureModeUndefined ? 10 : width;
+  size.width = 0;
+  size.height = 0;
   return size;
   // END_UNITY
 }
 
-TEST(CSSLayoutTest, ignore_measure_on_non_leaf_node) {
+TEST(CSSLayoutTest, cannot_add_child_to_node_with_measure_func) {
   const CSSNodeRef root = CSSNodeNew();
-  int measureCount = 0;
-  CSSNodeSetContext(root, &measureCount);
   CSSNodeSetMeasureFunc(root, _measure);
 
   const CSSNodeRef root_child0 = CSSNodeNew();
-  int childMeasureCount = 0;
-  CSSNodeSetContext(root_child0, &childMeasureCount);
-  CSSNodeSetMeasureFunc(root_child0, _measure);
-  CSSNodeInsertChild(root, root_child0, 0);
-
-  CSSNodeCalculateLayout(root, CSSUndefined, CSSUndefined, CSSDirectionLTR);
-
-  ASSERT_EQ(0, measureCount);
-  ASSERT_EQ(1, childMeasureCount);
-
+  ASSERT_DEATH(CSSNodeInsertChild(root, root_child0, 0), "Cannot add child.*");
   CSSNodeFreeRecursive(root);
 }
+
+TEST(CSSLayoutTest, cannot_add_nonnull_measure_func_to_non_leaf_node) {
+  const CSSNodeRef root = CSSNodeNew();
+  const CSSNodeRef root_child0 = CSSNodeNew();
+  CSSNodeInsertChild(root, root_child0, 0);
+
+  ASSERT_DEATH(CSSNodeSetMeasureFunc(root, _measure), "Cannot set measure function.*");
+  CSSNodeFreeRecursive(root);
+}
+
+TEST(CSSLayoutTest, can_nullify_measure_func_on_any_node) {
+  const CSSNodeRef root = CSSNodeNew();
+  CSSNodeInsertChild(root, CSSNodeNew(), 0);
+
+  CSSNodeSetMeasureFunc(root, NULL);
+  ASSERT_TRUE(CSSNodeGetMeasureFunc(root) == NULL);
+  CSSNodeFreeRecursive(root);
+}
+
+#endif

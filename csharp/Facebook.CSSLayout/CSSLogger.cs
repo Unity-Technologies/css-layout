@@ -18,7 +18,7 @@ namespace UnityEngine.CSSLayout
     internal static class CSSLogger
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void Func(string message);
+        public delegate void Func(CSSLogLevel level, string message);
 
         private static bool _initialized;
         private static Func _managedLogger = null;
@@ -29,10 +29,10 @@ namespace UnityEngine.CSSLayout
         {
             if (!_initialized)
             {
-                _managedLogger = (message) => {
+                _managedLogger = (level, message) => {
                     if (Logger != null)
                     {
-                        Logger(message);
+                        Logger(level, message);
                     }
                 };
                 Native.CSSInteropSetLogger(_managedLogger);

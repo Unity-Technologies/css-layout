@@ -65,19 +65,6 @@ namespace UnityEngine.CSSLayout
             Native.CSSNodeMarkDirty(_cssNode);
         }
 
-        public bool IsTextNode
-        {
-            get
-            {
-                return Native.CSSNodeGetIsTextnode(_cssNode);
-            }
-
-            set
-            {
-                Native.CSSNodeSetIsTextnode(_cssNode, value);
-            }
-        }
-
         public bool HasNewLayout
         {
             get
@@ -544,9 +531,10 @@ namespace UnityEngine.CSSLayout
             CSSPrintOptions.Layout|CSSPrintOptions.Style|CSSPrintOptions.Children)
         {
             StringBuilder sb = new StringBuilder();
-            CSSLogger.Logger = (message) => {sb.Append(message);};
+            CSSLogger.Func orig = CSSLogger.Logger;
+            CSSLogger.Logger = (level, message) => {sb.Append(message);};
             Native.CSSNodePrint(_cssNode, options);
-            CSSLogger.Logger = null;
+            CSSLogger.Logger = orig;
             return sb.ToString();
         }
 

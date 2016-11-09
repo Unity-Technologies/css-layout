@@ -100,16 +100,6 @@
   CSSNodeStyleSetFlexWrap([self cssNode], flexWrap);
 }
 
-- (void)css_setOverflow:(CSSOverflow)overflow
-{
-  CSSNodeStyleSetOverflow([self cssNode], overflow);
-}
-
-- (void)css_setFlex:(CGFloat)flex
-{
-  CSSNodeStyleSetFlex([self cssNode], flex);
-}
-
 - (void)css_setFlexGrow:(CGFloat)flexGrow
 {
   CSSNodeStyleSetFlexGrow([self cssNode], flexGrow);
@@ -138,11 +128,6 @@
 - (void)css_setPadding:(CGFloat)padding forEdge:(CSSEdge)edge
 {
   CSSNodeStyleSetPadding([self cssNode], edge, padding);
-}
-
-- (void)css_setBorder:(CGFloat)border forEdge:(CSSEdge)edge
-{
-  CSSNodeStyleSetBorder([self cssNode], edge, border);
 }
 
 - (void)css_setWidth:(CGFloat)width
@@ -215,23 +200,36 @@ static CSSSize _measure(
   float height,
   CSSMeasureMode heightMode)
 {
-  if ((widthMode == CSSMeasureModeExactly) && (heightMode == CSSMeasureModeExactly)) {
-      return (CSSSize) {
-          .width = width,
-          .height = height,
-      };
-  }
+  const CGFloat constrainedWidth = (widthMode == CSSMeasureModeUndefined) ? CGFLOAT_MAX : width;
+  const CGFloat constrainedHeight = (heightMode == CSSMeasureModeUndefined) ? CGFLOAT_MAX: height;
 
   UIView *view = (__bridge UIView*) CSSNodeGetContext(node);
   const CGSize sizeThatFits = [view sizeThatFits:(CGSize) {
-    .width = widthMode == CSSMeasureModeUndefined ? CGFLOAT_MAX : width,
-    .height = heightMode == CSSMeasureModeUndefined ? CGFLOAT_MAX : height,
+    .width = constrainedWidth,
+    .height = constrainedHeight,
   }];
 
   return (CSSSize) {
-    .width = sizeThatFits.width,
-    .height = sizeThatFits.height,
+    .width = _sanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
+    .height = _sanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
   };
+}
+
+static CGFloat _sanitizeMeasurement(
+  CGFloat constrainedSize,
+  CGFloat measuredSize,
+  CSSMeasureMode measureMode)
+{
+  CGFloat result;
+  if (measureMode == CSSMeasureModeExactly) {
+    result = constrainedSize;
+  } else if (measureMode == CSSMeasureModeAtMost) {
+    result = MIN(constrainedSize, measuredSize);
+  } else {
+    result = measuredSize;
+  }
+
+  return result;
 }
 
 static void _attachNodesRecursive(UIView *view) {
@@ -266,22 +264,43 @@ static void _attachNodesRecursive(UIView *view) {
   }
 }
 
+static CGFloat _roundPixelValue(CGFloat value)
+{
+  static CGFloat scale;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^(){
+    scale = [UIScreen mainScreen].scale;
+  });
+
+  return round(value * scale) / scale;
+}
+
 static void _updateFrameRecursive(UIView *view) {
+  NSCAssert([NSThread isMainThread], @"Framesetting should only be done on the main thread.");
   CSSNodeRef node = [view cssNode];
-  const BOOL usesFlexbox = [view css_usesFlexbox];
-  const BOOL isLeaf = !usesFlexbox || view.subviews.count == 0;
+
+  const CGPoint topLeft = {
+    CSSNodeLayoutGetLeft(node),
+    CSSNodeLayoutGetTop(node),
+  };
+
+  const CGPoint bottomRight = {
+    topLeft.x + CSSNodeLayoutGetWidth(node),
+    topLeft.y + CSSNodeLayoutGetHeight(node),
+  };
 
   view.frame = (CGRect) {
     .origin = {
-      .x = CSSNodeLayoutGetLeft(node),
-      .y = CSSNodeLayoutGetTop(node),
+      .x = _roundPixelValue(topLeft.x),
+      .y = _roundPixelValue(topLeft.y),
     },
     .size = {
-      .width = CSSNodeLayoutGetWidth(node),
-      .height = CSSNodeLayoutGetHeight(node),
+      .width = _roundPixelValue(bottomRight.x) - _roundPixelValue(topLeft.x),
+      .height = _roundPixelValue(bottomRight.y) - _roundPixelValue(topLeft.y),
     },
   };
 
+  const BOOL isLeaf = ![view css_usesFlexbox] || view.subviews.count == 0;
   if (!isLeaf) {
     for (NSUInteger i = 0; i < view.subviews.count; i++) {
       _updateFrameRecursive(view.subviews[i]);
