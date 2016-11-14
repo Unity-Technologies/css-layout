@@ -50,8 +50,12 @@
 
 using System;
 using NUnit.Framework;
+// BEGIN-UNITY
+using UnityEngine.CSSLayout;
 
-namespace Facebook.CSSLayout
+// namespace Facebook.CSSLayout
+namespace CSSLayoutTests
+// END-UNITY
 {
     [TestFixture]
     public class CSSLayoutFlexDirectionTest

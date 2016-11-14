@@ -9,11 +9,12 @@
 
 using NUnit.Framework;
 using System;
+// BEGIN-UNITY
+using UnityEngine.CSSLayout;
 
-/**
- * Tests for {@link CSSNode}.
- */
-namespace Facebook.CSSLayout
+// namespace Facebook.CSSLayout
+namespace CSSLayoutTests
+// END-UNITY
 {
     [TestFixture]
     public class CSSNodeTest
@@ -72,6 +73,9 @@ namespace Facebook.CSSLayout
             Assert.AreEqual(0, parent.Count);
         }
 
+// BEGIN_UNITY
+#if !UNITY_EDITOR // we don't currently support this library's assert system
+// END_UNITY
         [Test]
         [ExpectedException("System.NullReferenceException")]
         public void TestRemoveAtFromEmpty()
@@ -101,6 +105,9 @@ namespace Facebook.CSSLayout
             parent1.Insert(0, child);
             parent2.Insert(0, child);
         }
+// BEGIN_UNITY
+#endif
+// END_UNITY
 
         [Test]
         public void TestReset()
@@ -112,6 +119,9 @@ namespace Facebook.CSSLayout
             Assert.AreEqual(instanceCount + 1, CSSNode.GetInstanceCount());
         }
 
+// BEGIN_UNITY
+#if !UNITY_EDITOR // we don't currently support this library's assert system
+// END_UNITY
         [Test]
         [ExpectedException("System.InvalidOperationException")]
         public void TestResetParent()
@@ -131,6 +141,9 @@ namespace Facebook.CSSLayout
             parent.Insert(0, child);
             child.Reset();
         }
+// BEGIN_UNITY
+#endif
+// END_UNITY
 
         [Test]
         public void TestClear()
@@ -148,6 +161,10 @@ namespace Facebook.CSSLayout
             Assert.IsNull(child.Parent);
             Assert.AreEqual(instanceCount + 2, CSSNode.GetInstanceCount());
         }
+
+// BEGIN_UNITY
+#if !UNITY_EDITOR // we don't currently support custom measurement
+// END_UNITY
 
         [Test]
         public void TestMeasureFunc()
@@ -178,14 +195,16 @@ namespace Facebook.CSSLayout
             parent.CalculateLayout();
             Assert.AreEqual(parent.Print(), "{layout: {width: 100, height: 120, top: 0, left: 0}, flexDirection: 'column', alignItems: 'stretch', flexGrow: 0, flexShrink: 0, overflow: 'visible', width: 100, height: 120, children: [\n  {layout: {width: 35, height: 45, top: 0, left: 0}, flexDirection: 'column', alignItems: 'stretch', flexGrow: 0, flexShrink: 0, overflow: 'visible', width: 35, height: 45, },\n  {layout: {width: 30, height: 40, top: 45, left: 0}, flexDirection: 'column', alignItems: 'stretch', flexGrow: 0, flexShrink: 0, overflow: 'visible', width: 30, height: 40, },\n]},\n");
         }
-
+// BEGIN_UNITY
+#endif
+// END_UNITY
         private void ForceGC()
         {
             GC.Collect(GC.MaxGeneration);
             GC.WaitForPendingFinalizers();
         }
 
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR // note this was already excluded in the initial implementation
         [Test]
         public void TestDestructor()
         {
