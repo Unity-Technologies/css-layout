@@ -15,7 +15,7 @@ namespace UnityEngine.CSSLayout
 // END_UNITY
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct CSSSize
+    internal struct CSSSize
     {
         public float width;
         public float height;

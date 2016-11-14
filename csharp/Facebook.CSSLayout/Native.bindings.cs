@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
  *
@@ -7,15 +7,14 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-// BEGIN_UNITY @joce 11-07-2016 CompileForC#Bindings
-#if false
-// END_UNITY
 using System;
 using System.Runtime.InteropServices;
+using Unity.Bindings;
 
-namespace Facebook.CSSLayout
+namespace UnityEngine.CSSLayout
 {
-    internal static class Native
+    [NativeType(Header = "External/CSSLayout/CSSLayout.h")]
+    internal static partial class Native
     {
 #if UNITY_IOS && !UNITY_EDITOR
         private const string DllName = "__Internal";
@@ -23,256 +22,261 @@ namespace Facebook.CSSLayout
         private const string DllName = "CSSLayout";
 #endif
 
-        [DllImport(DllName)]
-        public static extern void CSSInteropSetLogger(
-            [MarshalAs(UnmanagedType.FunctionPtr)] CSSLogger.Func func);
+// BEGIN_UNITY
+// TODO we don't support the logging & assert feature yet
+//         [DllImport(DllName)]
+//         public static extern void CSSInteropSetLogger(
+//             [MarshalAs(UnmanagedType.FunctionPtr)] CSSLogger.Func func);
+// 
+//         [DllImport(DllName)]
+//         public static extern void CSSAssertSetFailFunc(
+//             [MarshalAs(UnmanagedType.FunctionPtr)] CSSAssert.FailFunc func);
+// END_UNITY
 
-        [DllImport(DllName)]
-        public static extern void CSSAssertSetFailFunc(
-            [MarshalAs(UnmanagedType.FunctionPtr)] CSSAssert.FailFunc func);
-
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern IntPtr CSSNodeNew();
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeInit(IntPtr cssNode);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true, IsThreadSafe=true)]
         public static extern void CSSNodeFree(IntPtr cssNode);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeReset(IntPtr cssNode);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern int CSSNodeGetInstanceCount();
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeInsertChild(IntPtr node, IntPtr child, uint index);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeRemoveChild(IntPtr node, IntPtr child);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern IntPtr CSSNodeGetChild(IntPtr node, uint index);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern uint CSSNodeChildCount(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeCalculateLayout(IntPtr node,
                             float availableWidth,
                             float availableHeight,
                             CSSDirection parentDirection);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeMarkDirty(IntPtr node);
 
-        [DllImport(DllName)]
-        [return: MarshalAs(UnmanagedType.I1)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern bool CSSNodeIsDirty(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodePrint(IntPtr node, CSSPrintOptions options);
 
-        [DllImport(DllName)]
-        [return: MarshalAs(UnmanagedType.I1)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern bool CSSValueIsUndefined(float value);
 
         #region CSS_NODE_PROPERTY
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeSetContext(IntPtr node, IntPtr context);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern IntPtr CSSNodeGetContext(IntPtr node);
 
-        [DllImport(DllName)]
-        public static extern void CSSNodeSetMeasureFunc(
-            IntPtr node,
-            [MarshalAs(UnmanagedType.FunctionPtr)] CSSMeasureFunc measureFunc);
+// BEGIN_UNITY
+// TODO we don't support the logging & assert feature yet
+//      public static extern void CSSNodeSetMeasureFunc(
+//             IntPtr node,
+//             [MarshalAs(UnmanagedType.FunctionPtr)] CSSMeasureFunc measureFunc);
+//
+//      [NativeMethod(IsFreeFunction = true)]
+//      [return: MarshalAs(UnmanagedType.FunctionPtr)]
+//         public static extern CSSMeasureFunc CSSNodeGetMeasureFunc(IntPtr node);
+// END_UNITY
 
-        [DllImport(DllName)]
-        [return: MarshalAs(UnmanagedType.FunctionPtr)]
-        public static extern CSSMeasureFunc CSSNodeGetMeasureFunc(IntPtr node);
+        [NativeMethod(IsFreeFunction = true)]
+        public static extern void CSSNodeSetIsTextnode(IntPtr node, bool isTextNode);
 
-        [DllImport(DllName)]
-        public static extern void CSSNodeSetHasNewLayout(IntPtr node, [MarshalAs(UnmanagedType.I1)] bool hasNewLayout);
+        [NativeMethod(IsFreeFunction = true)]
+        public static extern bool CSSNodeGetIsTextnode(IntPtr node);
 
-        [DllImport(DllName)]
-        [return: MarshalAs(UnmanagedType.I1)]
+        [NativeMethod(IsFreeFunction = true)]
+        public static extern void CSSNodeSetHasNewLayout(IntPtr node, bool hasNewLayout);
+
+        [NativeMethod(IsFreeFunction = true)]
         public static extern bool CSSNodeGetHasNewLayout(IntPtr node);
 
         #endregion
 
         #region CSS_NODE_STYLE_PROPERTY
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetDirection(IntPtr node, CSSDirection direction);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSDirection CSSNodeStyleGetDirection(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetFlexDirection(IntPtr node, CSSFlexDirection flexDirection);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSFlexDirection CSSNodeStyleGetFlexDirection(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetJustifyContent(IntPtr node, CSSJustify justifyContent);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSJustify CSSNodeStyleGetJustifyContent(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetAlignContent(IntPtr node, CSSAlign alignContent);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSAlign CSSNodeStyleGetAlignContent(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetAlignItems(IntPtr node, CSSAlign alignItems);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSAlign CSSNodeStyleGetAlignItems(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetAlignSelf(IntPtr node, CSSAlign alignSelf);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSAlign CSSNodeStyleGetAlignSelf(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetPositionType(IntPtr node, CSSPositionType positionType);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSPositionType CSSNodeStyleGetPositionType(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetFlexWrap(IntPtr node, CSSWrap flexWrap);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSWrap CSSNodeStyleGetFlexWrap(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetOverflow(IntPtr node, CSSOverflow flexWrap);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSOverflow CSSNodeStyleGetOverflow(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetFlex(IntPtr node, float flex);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetFlexGrow(IntPtr node, float flexGrow);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetFlexGrow(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetFlexShrink(IntPtr node, float flexShrink);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetFlexShrink(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetFlexBasis(IntPtr node, float flexBasis);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetFlexBasis(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetWidth(IntPtr node, float width);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetWidth(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetHeight(IntPtr node, float height);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetHeight(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetMinWidth(IntPtr node, float minWidth);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetMinWidth(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetMinHeight(IntPtr node, float minHeight);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetMinHeight(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetMaxWidth(IntPtr node, float maxWidth);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetMaxWidth(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetMaxHeight(IntPtr node, float maxHeight);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetMaxHeight(IntPtr node);
 
         #endregion
 
         #region CSS_NODE_STYLE_EDGE_PROPERTY
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetPosition(IntPtr node, CSSEdge edge, float position);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetPosition(IntPtr node, CSSEdge edge);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetMargin(IntPtr node, CSSEdge edge, float margin);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetMargin(IntPtr node, CSSEdge edge);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetPadding(IntPtr node, CSSEdge edge, float padding);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetPadding(IntPtr node, CSSEdge edge);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetBorder(IntPtr node, CSSEdge edge, float border);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetBorder(IntPtr node, CSSEdge edge);
 
         #endregion
 
         #region CSS_NODE_LAYOUT_PROPERTY
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeLayoutGetLeft(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeLayoutGetTop(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeLayoutGetRight(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeLayoutGetBottom(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeLayoutGetWidth(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeLayoutGetHeight(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern CSSDirection CSSNodeLayoutGetDirection(IntPtr node);
 
         #endregion
     }
 }
-// BEGIN_UNITY @joce 11-07-2016 CompileForC#Bindings
-#endif
-// END_UNITY

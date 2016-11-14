@@ -18,13 +18,16 @@ using System.Text;
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public class CSSNode : IEnumerable<CSSNode>
+    internal class CSSNode : IEnumerable<CSSNode>
     {
         private IntPtr _cssNode;
         private WeakReference _parent;
         private List<CSSNode> _children;
         private MeasureFunction _measureFunction;
-        private CSSMeasureFunc _cssMeasureFunc;
+// BEGIN_UNITY
+        // TODO we don't support the measurement feature yet
+        //private CSSMeasureFunc _cssMeasureFunc;
+// END_UNITY
         private object _data;
 
         public CSSNode()
@@ -498,8 +501,11 @@ namespace UnityEngine.CSSLayout
         public void SetMeasureFunction(MeasureFunction measureFunction)
         {
             _measureFunction = measureFunction;
-            _cssMeasureFunc = measureFunction != null ? MeasureInternal : (CSSMeasureFunc)null;
-            Native.CSSNodeSetMeasureFunc(_cssNode, _cssMeasureFunc);
+            // BEGIN_UNITY
+            // TODO we don't support the measurement feature yet
+            //_cssMeasureFunc = measureFunction != null ? MeasureInternal : (CSSMeasureFunc)null;
+            //Native.CSSNodeSetMeasureFunc(_cssNode, _cssMeasureFunc);
+            // END_UNITY
         }
 
         public void CalculateLayout()
@@ -527,9 +533,16 @@ namespace UnityEngine.CSSLayout
             return new CSSSize { width = MeasureOutput.GetWidth(output), height = MeasureOutput.GetHeight(output) };
         }
 
-        public string Print(CSSPrintOptions options =
-            CSSPrintOptions.Layout|CSSPrintOptions.Style|CSSPrintOptions.Children)
+// BEGIN-UNITY
+// Default arguments are not supported on all Unity platforms
+        public string Print()
         {
+            return Print(CSSPrintOptions.Layout|CSSPrintOptions.Style|CSSPrintOptions.Children);
+        }
+
+        public string Print(CSSPrintOptions options)
+        {
+// END-UNITY
             StringBuilder sb = new StringBuilder();
             CSSLogger.Func orig = CSSLogger.Logger;
             CSSLogger.Logger = (level, message) => {sb.Append(message);};

@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSPrintOptions
+    internal enum CSSPrintOptions
     {
         Layout = 1,
         Style = 2,

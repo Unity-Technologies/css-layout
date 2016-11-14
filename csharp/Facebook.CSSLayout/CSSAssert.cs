@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
  *
@@ -17,22 +17,24 @@ namespace UnityEngine.CSSLayout
 {
     internal static class CSSAssert
     {
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void FailFunc(string message);
+// TODO we don't support the assertion feature yet
 
-        private static bool _assertInitialized;
-        private static FailFunc _failFunc;
+//         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+//         internal delegate void FailFunc(string message);
+// 
+//         private static bool _assertInitialized;
+//         private static FailFunc _failFunc;
 
         public static void Initialize()
         {
-            if (!_assertInitialized)
-            {
-                _failFunc = (message) => {
-                    throw new InvalidOperationException(message);
-                };
-                Native.CSSAssertSetFailFunc(_failFunc);
-                _assertInitialized = true;
-            }
+//             if (!_assertInitialized)
+//             {
+//                 _failFunc = (message) => {
+//                     throw new InvalidOperationException(message);
+//                 };
+//                 Native.CSSAssertSetFailFunc(_failFunc);
+//                 _assertInitialized = true;
+//             }
         }
     }
 }

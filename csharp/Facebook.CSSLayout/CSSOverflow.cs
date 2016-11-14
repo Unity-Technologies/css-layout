@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSOverflow
+    internal enum CSSOverflow
     {
         Visible,
         Hidden,

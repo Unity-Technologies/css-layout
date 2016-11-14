@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
  *
@@ -17,27 +17,29 @@ namespace UnityEngine.CSSLayout
 {
     internal static class CSSLogger
     {
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void Func(CSSLogLevel level, string message);
+// TODO we don't support the logging feature yet
 
-        private static bool _initialized;
-        private static Func _managedLogger = null;
-
-        public static Func Logger = null;
+         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+         internal delegate void Func(string message);
+// 
+//         private static bool _initialized;
+//         private static Func _managedLogger = null;
+// 
+         public static Func Logger = null;
 
         public static void Initialize()
         {
-            if (!_initialized)
-            {
-                _managedLogger = (level, message) => {
-                    if (Logger != null)
-                    {
-                        Logger(level, message);
-                    }
-                };
-                Native.CSSInteropSetLogger(_managedLogger);
-                _initialized = true;
-            }
+//             if (!_initialized)
+//             {
+//                 _managedLogger = (message) => {
+//                     if (Logger != null)
+//                     {
+//                         Logger(message);
+//                     }
+//                 };
+//                 Native.CSSInteropSetLogger(_managedLogger);
+//                 _initialized = true;
+//             }
         }
     }
 }

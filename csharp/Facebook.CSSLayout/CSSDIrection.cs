@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSDirection
+    internal enum CSSDirection
     {
         Inherit,
         LeftToRight,

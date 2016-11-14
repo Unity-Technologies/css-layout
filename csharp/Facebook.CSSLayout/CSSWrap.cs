@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSWrap
+    internal enum CSSWrap
     {
         NoWrap,
         Wrap,

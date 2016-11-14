@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSJustify
+    internal enum CSSJustify
     {
         FlexStart,
         Center,

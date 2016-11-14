@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSEdge
+    internal enum CSSEdge
     {
         Left,
         Top,

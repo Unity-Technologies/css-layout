@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSMeasureMode
+    internal enum CSSMeasureMode
     {
         Undefined,
         Exactly,

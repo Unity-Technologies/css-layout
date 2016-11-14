@@ -16,7 +16,7 @@ namespace UnityEngine.CSSLayout
 // END_UNITY
 {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate CSSSize CSSMeasureFunc(
+    internal delegate CSSSize CSSMeasureFunc(
         IntPtr node, 
         float width,
         CSSMeasureMode widthMode,

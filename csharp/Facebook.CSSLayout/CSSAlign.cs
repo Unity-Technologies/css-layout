@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSAlign
+    internal enum CSSAlign
     {
         Auto,
         FlexStart,

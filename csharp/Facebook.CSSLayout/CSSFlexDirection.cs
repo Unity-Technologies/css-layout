@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSFlexDirection
+    internal enum CSSFlexDirection
     {
         Column,
         ColumnReverse,

@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSDimension
+    internal enum CSSDimension
     {
         Width,
         Height

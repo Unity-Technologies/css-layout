@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public static class CSSConstants
+    internal static class CSSConstants
     {
         public const float Undefined = float.NaN;
 
