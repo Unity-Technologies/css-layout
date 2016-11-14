@@ -364,7 +364,10 @@ bool CSSNodeIsDirty(const CSSNodeRef node) {
   return node->isDirty;
 }
 
-inline float CSSNodeStyleGetFlexGrow(CSSNodeRef node) {
+// BEGIN_UNITY @antoine 11-14-2016 CompileForVS2010
+// inline float CSSNodeStyleGetFlexGrow(CSSNodeRef node) {
+float CSSNodeStyleGetFlexGrow(CSSNodeRef node) {
+// END_UNITY
   if (!CSSValueIsUndefined(node->style.flexGrow)) {
     return node->style.flexGrow;
   }
@@ -374,7 +377,10 @@ inline float CSSNodeStyleGetFlexGrow(CSSNodeRef node) {
   return 0;
 }
 
-inline float CSSNodeStyleGetFlexShrink(CSSNodeRef node) {
+// BEGIN_UNITY @antoine 11-14-2016 CompileForVS2010
+// inline float CSSNodeStyleGetFlexShrink(CSSNodeRef node) {
+float CSSNodeStyleGetFlexShrink(CSSNodeRef node) {
+// END_UNITY
   if (!CSSValueIsUndefined(node->style.flexShrink)) {
     return node->style.flexShrink;
   }
@@ -384,7 +390,10 @@ inline float CSSNodeStyleGetFlexShrink(CSSNodeRef node) {
   return 0;
 }
 
-inline float CSSNodeStyleGetFlexBasis(CSSNodeRef node) {
+// BEGIN_UNITY @antoine 11-14-2016 CompileForVS2010
+// inline float CSSNodeStyleGetFlexBasis(CSSNodeRef node) {
+float CSSNodeStyleGetFlexBasis(CSSNodeRef node) {
+// END_UNITY
   if (!CSSValueIsUndefined(node->style.flexBasis)) {
     return node->style.flexBasis;
   }
