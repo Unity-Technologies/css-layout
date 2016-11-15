@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-  public delegate long MeasureFunction(
+  internal delegate long MeasureFunction(
       CSSNode node,
       float width,
       CSSMeasureMode widthMode,

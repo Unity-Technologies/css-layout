@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public class MeasureOutput
+    internal class MeasureOutput
     {
         public static long Make(int width, int height)
         {
