@@ -78,7 +78,7 @@ namespace CSSLayoutTests
             root_child0.SetMargin(CSSEdge.Start, 10);
             root_child0.StyleWidth = 10;
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -91,7 +91,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(10, root_child0.LayoutWidth);
             Assert.AreEqual(100, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -116,7 +116,7 @@ namespace CSSLayoutTests
             root_child0.SetMargin(CSSEdge.Top, 10);
             root_child0.StyleHeight = 10;
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -129,7 +129,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(100, root_child0.LayoutWidth);
             Assert.AreEqual(10, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -156,7 +156,7 @@ namespace CSSLayoutTests
             root_child0.SetMargin(CSSEdge.End, 10);
             root_child0.StyleWidth = 10;
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -169,7 +169,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(10, root_child0.LayoutWidth);
             Assert.AreEqual(100, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -195,7 +195,7 @@ namespace CSSLayoutTests
             root_child0.SetMargin(CSSEdge.Bottom, 10);
             root_child0.StyleHeight = 10;
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -208,7 +208,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(100, root_child0.LayoutWidth);
             Assert.AreEqual(10, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -234,7 +234,7 @@ namespace CSSLayoutTests
             root_child0.FlexGrow = 1;
             root_child0.SetMargin(CSSEdge.Start, 10);
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -247,7 +247,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(90, root_child0.LayoutWidth);
             Assert.AreEqual(100, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -272,7 +272,7 @@ namespace CSSLayoutTests
             root_child0.FlexGrow = 1;
             root_child0.SetMargin(CSSEdge.Top, 10);
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -285,7 +285,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(100, root_child0.LayoutWidth);
             Assert.AreEqual(90, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -311,7 +311,7 @@ namespace CSSLayoutTests
             root_child0.FlexGrow = 1;
             root_child0.SetMargin(CSSEdge.Top, 10);
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -324,7 +324,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(100, root_child0.LayoutWidth);
             Assert.AreEqual(90, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -349,7 +349,7 @@ namespace CSSLayoutTests
             root_child0.FlexGrow = 1;
             root_child0.SetMargin(CSSEdge.Start, 10);
             root.Insert(0, root_child0);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -362,7 +362,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(90, root_child0.LayoutWidth);
             Assert.AreEqual(100, root_child0.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -391,7 +391,7 @@ namespace CSSLayoutTests
             CSSNode root_child1 = new CSSNode();
             root_child1.FlexGrow = 1;
             root.Insert(1, root_child1);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -409,7 +409,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(50, root_child1.LayoutWidth);
             Assert.AreEqual(100, root_child1.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -442,7 +442,7 @@ namespace CSSLayoutTests
             CSSNode root_child1 = new CSSNode();
             root_child1.FlexGrow = 1;
             root.Insert(1, root_child1);
-            root.StyleDirection = CSSDirection.LeftToRight;
+            root.StyleDirection = CSSDirection.LTR;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);
@@ -460,7 +460,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(100, root_child1.LayoutWidth);
             Assert.AreEqual(50, root_child1.LayoutHeight);
 
-            root.StyleDirection = CSSDirection.RightToLeft;
+            root.StyleDirection = CSSDirection.RTL;
             root.CalculateLayout();
 
             Assert.AreEqual(0, root.LayoutX);

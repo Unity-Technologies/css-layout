@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
  *
@@ -15,7 +15,11 @@ namespace UnityEngine.CSSLayout
     internal enum CSSDirection
     {
         Inherit,
-        LeftToRight,
-        RightToLeft
+        LTR,
+        RTL,
+        [System.Obsolete("Use LTR instead")]
+        LeftToRight = LTR,
+        [System.Obsolete("Use RTL instead")]
+        RightToLeft = RTL,
     }
 }

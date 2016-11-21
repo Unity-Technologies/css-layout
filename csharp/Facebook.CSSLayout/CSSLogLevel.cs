@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
  *
@@ -7,7 +7,10 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-namespace Facebook.CSSLayout
+// BEGIN_UNITY @joce 11-07-2016 CompileForC#Bindings
+//namespace Facebook.CSSLayout
+namespace UnityEngine.CSSLayout
+// END_UNITY
 {
     public enum CSSLogLevel
     {

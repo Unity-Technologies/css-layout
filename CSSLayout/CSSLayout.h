@@ -28,106 +28,15 @@ static const unsigned long __nan[2] = {0xffffffff, 0x7fffffff};
 
 #define CSSUndefined NAN
 
+#include "CSSEnums.h"
 #include "CSSMacros.h"
 
 CSS_EXTERN_C_BEGIN
-
-typedef enum CSSDirection {
-  CSSDirectionInherit,
-  CSSDirectionLTR,
-  CSSDirectionRTL,
-} CSSDirection;
-
-typedef enum CSSFlexDirection {
-  CSSFlexDirectionColumn,
-  CSSFlexDirectionColumnReverse,
-  CSSFlexDirectionRow,
-  CSSFlexDirectionRowReverse,
-} CSSFlexDirection;
-
-typedef enum CSSJustify {
-  CSSJustifyFlexStart,
-  CSSJustifyCenter,
-  CSSJustifyFlexEnd,
-  CSSJustifySpaceBetween,
-  CSSJustifySpaceAround,
-} CSSJustify;
-
-typedef enum CSSOverflow {
-  CSSOverflowVisible,
-  CSSOverflowHidden,
-  CSSOverflowScroll,
-} CSSOverflow;
-
-// Note: auto is only a valid value for alignSelf. It is NOT a valid value for
-// alignItems.
-typedef enum CSSAlign {
-  CSSAlignAuto,
-  CSSAlignFlexStart,
-  CSSAlignCenter,
-  CSSAlignFlexEnd,
-  CSSAlignStretch,
-} CSSAlign;
-
-typedef enum CSSPositionType {
-  CSSPositionTypeRelative,
-  CSSPositionTypeAbsolute,
-} CSSPositionType;
-
-// BEGIN_UNITY @joce 11-01-2016 CompileForC#
-// typedef enum CSSWrapType {
-//   CSSWrapTypeNoWrap,
-//   CSSWrapTypeWrap,
-// } CSSWrapType;
-typedef enum CSSWrap {
-  CSSWrapNoWrap,
-  CSSWrapWrap,
-} CSSWrap;
-// END_UNITY
-
-typedef enum CSSMeasureMode {
-  CSSMeasureModeUndefined,
-  CSSMeasureModeExactly,
-  CSSMeasureModeAtMost,
-  CSSMeasureModeCount,
-} CSSMeasureMode;
-
-typedef enum CSSDimension {
-  CSSDimensionWidth,
-  CSSDimensionHeight,
-} CSSDimension;
-
-typedef enum CSSEdge {
-  CSSEdgeLeft,
-  CSSEdgeTop,
-  CSSEdgeRight,
-  CSSEdgeBottom,
-  CSSEdgeStart,
-  CSSEdgeEnd,
-  CSSEdgeHorizontal,
-  CSSEdgeVertical,
-  CSSEdgeAll,
-  CSSEdgeCount,
-} CSSEdge;
-
-typedef enum CSSPrintOptions {
-  CSSPrintOptionsLayout = 1,
-  CSSPrintOptionsStyle = 2,
-  CSSPrintOptionsChildren = 4,
-} CSSPrintOptions;
 
 typedef struct CSSSize {
   float width;
   float height;
 } CSSSize;
-
-typedef enum CSSLogLevel {
-  CSSLogLevelError,
-  CSSLogLevelWarn,
-  CSSLogLevelInfo,
-  CSSLogLevelDebug,
-  CSSLogLevelVerbose,
-} CSSLogLevel;
 
 typedef struct CSSNode *CSSNodeRef;
 typedef CSSSize (*CSSMeasureFunc)(CSSNodeRef node,
@@ -138,9 +47,10 @@ typedef CSSSize (*CSSMeasureFunc)(CSSNodeRef node,
 typedef void (*CSSPrintFunc)(CSSNodeRef node);
 typedef int (*CSSLogger)(CSSLogLevel level, const char *format, va_list args);
 
-#ifdef CSS_ASSERT_FAIL_ENABLED
-typedef void (*CSSAssertFailFunc)(const char *message);
-#endif
+typedef void *(*CSSMalloc)(size_t size);
+typedef void *(*CSSCalloc)(size_t count, size_t size);
+typedef void *(*CSSRealloc)(void *ptr, size_t size);
+typedef void (*CSSFree)(void *ptr);
 
 // CSSNode
 WIN_EXPORT CSSNodeRef CSSNodeNew(void);
@@ -191,6 +101,8 @@ WIN_EXPORT bool CSSNodeCanUseCachedMeasurement(const CSSMeasureMode widthMode,
                                                const float marginRow,
                                                const float marginColumn);
 
+WIN_EXPORT void CSSNodeCopyStyle(const CSSNodeRef dstNode, const CSSNodeRef srcNode);
+
 #define CSS_NODE_PROPERTY(type, name, paramName)                           \
   WIN_EXPORT void CSSNodeSet##name(const CSSNodeRef node, type paramName); \
   WIN_EXPORT type CSSNodeGet##name(const CSSNodeRef node);
@@ -220,10 +132,7 @@ CSS_NODE_STYLE_PROPERTY(CSSAlign, AlignContent, alignContent);
 CSS_NODE_STYLE_PROPERTY(CSSAlign, AlignItems, alignItems);
 CSS_NODE_STYLE_PROPERTY(CSSAlign, AlignSelf, alignSelf);
 CSS_NODE_STYLE_PROPERTY(CSSPositionType, PositionType, positionType);
-// BEGIN_UNITY @joce 11-01-2016 CompileForC#
-//CSS_NODE_STYLE_PROPERTY(CSSWrapType, FlexWrap, flexWrap);
 CSS_NODE_STYLE_PROPERTY(CSSWrap, FlexWrap, flexWrap);
-// END_UNITY
 CSS_NODE_STYLE_PROPERTY(CSSOverflow, Overflow, overflow);
 
 WIN_EXPORT void CSSNodeStyleSetFlex(const CSSNodeRef node, const float flex);
@@ -254,10 +163,13 @@ CSS_NODE_LAYOUT_PROPERTY(CSSDirection, Direction);
 WIN_EXPORT void CSSLayoutSetLogger(CSSLogger logger);
 WIN_EXPORT void CSSLog(CSSLogLevel level, const char *message, ...);
 
-#ifdef CSS_ASSERT_FAIL_ENABLED
-// Assert
-WIN_EXPORT void CSSAssertSetFailFunc(CSSAssertFailFunc func);
-WIN_EXPORT void CSSAssertFail(const char *message);
-#endif
+WIN_EXPORT void CSSLayoutSetExperimentalFeatureEnabled(CSSExperimentalFeature feature,
+                                                       bool enabled);
+WIN_EXPORT bool CSSLayoutIsExperimentalFeatureEnabled(CSSExperimentalFeature feature);
+
+WIN_EXPORT void CSSLayoutSetMemoryFuncs(CSSMalloc cssMalloc,
+                                        CSSCalloc cssCalloc,
+                                        CSSRealloc cssRealloc,
+                                        CSSFree cssFree);
 
 CSS_EXTERN_C_END

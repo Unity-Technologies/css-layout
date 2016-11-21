@@ -12,10 +12,13 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
+// BEGIN_UNITY @joce 11-21-2016 CompileForC#Bindings
+  //internal delegate long MeasureFunction(
   internal delegate long MeasureFunction(
-      CSSNode node,
-      float width,
-      CSSMeasureMode widthMode,
-      float height,
-      CSSMeasureMode heightMode);
+// END_UNITY
+        CSSNode node,
+        float width,
+        CSSMeasureMode widthMode,
+        float height,
+        CSSMeasureMode heightMode);
 }

@@ -71,8 +71,8 @@ CSEmitter.prototype = Object.create(Emitter.prototype, {
   CSSAlignStretch:{value:'CSSAlign.Stretch'},
 
   CSSDirectionInherit:{value:'CSSDirection.Inherit'},
-  CSSDirectionLTR:{value:'CSSDirection.LeftToRight'},
-  CSSDirectionRTL:{value:'CSSDirection.RightToLeft'},
+  CSSDirectionLTR:{value:'CSSDirection.LTR'},
+  CSSDirectionRTL:{value:'CSSDirection.RTL'},
 
   CSSEdgeBottom:{value:'CSSEdge.Bottom'},
   CSSEdgeEnd:{value:'CSSEdge.End'},
@@ -100,8 +100,8 @@ CSEmitter.prototype = Object.create(Emitter.prototype, {
 
   CSSUndefined:{value:'CSSConstants.Undefined'},
 
-  CSSWrapTypeNoWrap:{value:'CSSWrap.NoWrap'},
-  CSSWrapTypeWrap:{value:'CSSWrap.Wrap'},
+  CSSWrapNoWrap:{value:'CSSWrap.NoWrap'},
+  CSSWrapWrap:{value:'CSSWrap.Wrap'},
 
   CSSNodeCalculateLayout:{value:function(node, dir) {
     this.push(node + '.StyleDirection = ' + dir + ';');

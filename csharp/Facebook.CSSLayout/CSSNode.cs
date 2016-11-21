@@ -18,7 +18,10 @@ using System.Text;
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    internal class CSSNode : IEnumerable<CSSNode>
+// BEGIN_UNITY @joce 11-21-2016 CompileForC#Bindings
+    //public partial class CSSNode : IEnumerable<CSSNode>
+    internal partial class CSSNode : IEnumerable<CSSNode>
+// END_UNITY
     {
         private IntPtr _cssNode;
         private WeakReference _parent;
@@ -32,7 +35,6 @@ namespace UnityEngine.CSSLayout
 
         public CSSNode()
         {
-            CSSAssert.Initialize();
             CSSLogger.Initialize();
 
             _cssNode = Native.CSSNodeNew();
@@ -95,6 +97,11 @@ namespace UnityEngine.CSSLayout
             {
                 return _measureFunction != null;
             }
+        }
+
+        public void CopyStyle(CSSNode srcNode)
+        {
+            Native.CSSNodeCopyStyle(_cssNode, srcNode._cssNode);
         }
 
         public CSSDirection StyleDirection
@@ -501,7 +508,7 @@ namespace UnityEngine.CSSLayout
         public void SetMeasureFunction(MeasureFunction measureFunction)
         {
             _measureFunction = measureFunction;
-            // BEGIN_UNITY
+            // BEGIN_UNITY @joce CompileForC#Bindings
             // TODO we don't support the measurement feature yet
             //_cssMeasureFunc = measureFunction != null ? MeasureInternal : (CSSMeasureFunc)null;
             //Native.CSSNodeSetMeasureFunc(_cssNode, _cssMeasureFunc);
@@ -533,8 +540,9 @@ namespace UnityEngine.CSSLayout
             return new CSSSize { width = MeasureOutput.GetWidth(output), height = MeasureOutput.GetHeight(output) };
         }
 
-// BEGIN-UNITY
-// Default arguments are not supported on all Unity platforms
+// BEGIN_UNITY @joce CompileForC#Bindings - Default arguments are not supported on all Unity platforms
+        //public string Print(CSSPrintOptions options =
+        //    CSSPrintOptions.Layout|CSSPrintOptions.Style|CSSPrintOptions.Children)
         public string Print()
         {
             return Print(CSSPrintOptions.Layout|CSSPrintOptions.Style|CSSPrintOptions.Children);
@@ -542,7 +550,7 @@ namespace UnityEngine.CSSLayout
 
         public string Print(CSSPrintOptions options)
         {
-// END-UNITY
+// END_UNITY
             StringBuilder sb = new StringBuilder();
             CSSLogger.Func orig = CSSLogger.Logger;
             CSSLogger.Logger = (level, message) => {sb.Append(message);};
@@ -566,6 +574,18 @@ namespace UnityEngine.CSSLayout
         public static int GetInstanceCount()
         {
             return Native.CSSNodeGetInstanceCount();
+        }
+
+        public static void setExperimentalFeatureEnabled(
+            CSSExperimentalFeature feature,
+            bool enabled)
+        {
+            Native.CSSLayoutSetExperimentalFeatureEnabled(feature, enabled);
+        }
+
+        public static bool isExperimentalFeatureEnabled(CSSExperimentalFeature feature)
+        {
+            return Native.CSSLayoutIsExperimentalFeatureEnabled(feature);
         }
     }
 }

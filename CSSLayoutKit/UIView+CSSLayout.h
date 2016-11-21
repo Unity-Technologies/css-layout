@@ -12,8 +12,15 @@
 
 @interface UIView (CSSLayout)
 
-- (void)css_setUsesFlexbox:(BOOL)enabled;
-- (BOOL)css_usesFlexbox;
+/**
+  The property that decides if we should include this view when calculating layout. Defaults to YES.
+ */
+@property (nonatomic, readwrite, assign, setter=css_setIncludeInLayout:) BOOL css_includeInLayout;
+
+/**
+ The property that decides during layout/sizing whether or not css_* properties should be applied. Defaults to NO.
+ */
+@property (nonatomic, readwrite, assign, setter=css_setUsesFlexbox:) BOOL css_usesFlexbox;
 
 - (void)css_setDirection:(CSSDirection)direction;
 - (void)css_setFlexDirection:(CSSFlexDirection)flexDirection;
@@ -22,7 +29,7 @@
 - (void)css_setAlignItems:(CSSAlign)alignItems;
 - (void)css_setAlignSelf:(CSSAlign)alignSelf;
 - (void)css_setPositionType:(CSSPositionType)positionType;
-- (void)css_setFlexWrap:(CSSWrapType)flexWrap;
+- (void)css_setFlexWrap:(CSSWrap)flexWrap;
 
 - (void)css_setFlexGrow:(CGFloat)flexGrow;
 - (void)css_setFlexShrink:(CGFloat)flexShrink;
@@ -39,13 +46,19 @@
 - (void)css_setMaxWidth:(CGFloat)maxWidth;
 - (void)css_setMaxHeight:(CGFloat)maxHeight;
 
-// Get the resolved direction of this node. This won't be CSSDirectionInherit
+/**
+ Get the resolved direction of this node. This won't be CSSDirectionInherit
+ */
 - (CSSDirection)css_resolvedDirection;
 
-//! @abstract Perform a layout calculation and update the frames of the views in the hierarchy with th results
+/**
+ Perform a layout calculation and update the frames of the views in the hierarchy with th results
+ */
 - (void)css_applyLayout;
 
-//! @abstract Compute the size of a layout with a constrained size.
-- (CGSize)css_sizeThatFits:(CGSize)constrainedSize;
+/**
+ Returns the size of the view if no constraints were given. This could equivalent to calling [self sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
+ */
+- (CGSize)css_intrinsicSize;
 
 @end

@@ -33,16 +33,27 @@
 
 @implementation UIView (CSSLayout)
 
-- (CSSNodeRef)cssNode
+- (BOOL)css_usesFlexbox
 {
-  CSSNodeBridge *node = objc_getAssociatedObject(self, @selector(cssNode));
-  if (!node) {
-    node = [CSSNodeBridge new];
-    CSSNodeSetContext(node.cnode, (__bridge void *) self);
-    objc_setAssociatedObject(self, @selector(cssNode), node, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-  }
+  NSNumber *usesFlexbox = objc_getAssociatedObject(self, @selector(css_usesFlexbox));
+  return [usesFlexbox boolValue];
+}
 
-  return node.cnode;
+- (BOOL)css_includeInLayout
+{
+  NSNumber *includeInLayout = objc_getAssociatedObject(self, @selector(css_includeInLayout));
+  return (includeInLayout != nil) ? [includeInLayout boolValue] : YES;
+}
+
+#pragma mark - Setters
+
+- (void)css_setIncludeInLayout:(BOOL)includeInLayout
+{
+  objc_setAssociatedObject(
+    self,
+    @selector(css_includeInLayout),
+    @(includeInLayout),
+    OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)css_setUsesFlexbox:(BOOL)enabled
@@ -52,12 +63,6 @@
     @selector(css_usesFlexbox),
     @(enabled),
     OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (BOOL)css_usesFlexbox
-{
-  NSNumber *usesFlexbox = objc_getAssociatedObject(self, @selector(css_usesFlexbox));
-  return [usesFlexbox boolValue];
 }
 
 - (void)css_setDirection:(CSSDirection)direction
@@ -95,7 +100,7 @@
   CSSNodeStyleSetPositionType([self cssNode], positionType);
 }
 
-- (void)css_setFlexWrap:(CSSWrapType)flexWrap
+- (void)css_setFlexWrap:(CSSWrap)flexWrap
 {
   CSSNodeStyleSetFlexWrap([self cssNode], flexWrap);
 }
@@ -160,23 +165,54 @@
   CSSNodeStyleSetMaxHeight([self cssNode], maxHeight);
 }
 
+#pragma mark - Layout and Sizing
+
 - (CSSDirection)css_resolvedDirection
 {
   return CSSNodeLayoutGetDirection([self cssNode]);
 }
 
-- (CGSize)css_sizeThatFits:(CGSize)constrainedSize
+- (void)css_applyLayout
+{
+  [self calculateLayoutWithSize:self.bounds.size];
+  CSSApplyLayoutToViewHierarchy(self);
+}
+
+- (CGSize)css_intrinsicSize
+{
+  const CGSize constrainedSize = {
+      .width = CSSUndefined,
+      .height = CSSUndefined,
+  };
+  return [self calculateLayoutWithSize:constrainedSize];
+}
+
+#pragma mark - Private
+
+- (CSSNodeRef)cssNode
+{
+  CSSNodeBridge *node = objc_getAssociatedObject(self, @selector(cssNode));
+  if (!node) {
+    node = [CSSNodeBridge new];
+    CSSNodeSetContext(node.cnode, (__bridge void *) self);
+    objc_setAssociatedObject(self, @selector(cssNode), node, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+
+  return node.cnode;
+}
+
+- (CGSize)calculateLayoutWithSize:(CGSize)size
 {
   NSAssert([NSThread isMainThread], @"CSS Layout calculation must be done on main.");
   NSAssert([self css_usesFlexbox], @"CSS Layout is not enabled for this view.");
 
-  _attachNodesRecursive(self);
+  CSSAttachNodesFromViewHierachy(self);
 
   const CSSNodeRef node = [self cssNode];
   CSSNodeCalculateLayout(
     node,
-    constrainedSize.width,
-    constrainedSize.height,
+    size.width,
+    size.height,
     CSSNodeStyleGetDirection(node));
 
   return (CGSize) {
@@ -185,15 +221,7 @@
   };
 }
 
-- (void)css_applyLayout
-{
-  [self css_sizeThatFits:self.bounds.size];
-  _updateFrameRecursive(self);
-}
-
-#pragma mark - Private
-
-static CSSSize _measure(
+static CSSSize CSSMeasureView(
   CSSNodeRef node,
   float width,
   CSSMeasureMode widthMode,
@@ -210,12 +238,12 @@ static CSSSize _measure(
   }];
 
   return (CSSSize) {
-    .width = _sanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
-    .height = _sanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
+    .width = CSSSanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
+    .height = CSSSanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
   };
 }
 
-static CGFloat _sanitizeMeasurement(
+static CGFloat CSSSanitizeMeasurement(
   CGFloat constrainedSize,
   CGFloat measuredSize,
   CSSMeasureMode measureMode)
@@ -232,14 +260,14 @@ static CGFloat _sanitizeMeasurement(
   return result;
 }
 
-static void _attachNodesRecursive(UIView *view) {
+static void CSSAttachNodesFromViewHierachy(UIView *view) {
   CSSNodeRef node = [view cssNode];
   const BOOL usesFlexbox = [view css_usesFlexbox];
   const BOOL isLeaf = !usesFlexbox || view.subviews.count == 0;
 
   // Only leaf nodes should have a measure function
   if (isLeaf) {
-    CSSNodeSetMeasureFunc(node, _measure);
+    CSSNodeSetMeasureFunc(node, CSSMeasureView);
 
     // Clear any children
     while (CSSNodeChildCount(node) > 0) {
@@ -248,23 +276,30 @@ static void _attachNodesRecursive(UIView *view) {
   } else {
     CSSNodeSetMeasureFunc(node, NULL);
 
+    NSUInteger numSubviewsInLayout = 0;
     // Add any children which were added since the last call to css_applyLayout
     for (NSUInteger i = 0; i < view.subviews.count; i++) {
-      CSSNodeRef childNode = [view.subviews[i] cssNode];
+      UIView *const subview = view.subviews[i];
+      if (![subview css_includeInLayout]) {
+        continue;
+      }
+      numSubviewsInLayout++;
+
+      CSSNodeRef childNode = [subview cssNode];
       if (CSSNodeChildCount(node) < i + 1 || CSSNodeGetChild(node, i) != childNode) {
         CSSNodeInsertChild(node, childNode, i);
       }
-      _attachNodesRecursive(view.subviews[i]);
+      CSSAttachNodesFromViewHierachy(subview);
     }
 
     // Remove any children which were removed since the last call to css_applyLayout
-    while (view.subviews.count < CSSNodeChildCount(node)) {
+    while (numSubviewsInLayout < CSSNodeChildCount(node)) {
       CSSNodeRemoveChild(node, CSSNodeGetChild(node, CSSNodeChildCount(node) - 1));
     }
   }
 }
 
-static CGFloat _roundPixelValue(CGFloat value)
+static CGFloat CSSRoundPixelValue(CGFloat value)
 {
   static CGFloat scale;
   static dispatch_once_t onceToken;
@@ -275,10 +310,13 @@ static CGFloat _roundPixelValue(CGFloat value)
   return round(value * scale) / scale;
 }
 
-static void _updateFrameRecursive(UIView *view) {
+static void CSSApplyLayoutToViewHierarchy(UIView *view) {
   NSCAssert([NSThread isMainThread], @"Framesetting should only be done on the main thread.");
-  CSSNodeRef node = [view cssNode];
+  if (![view css_includeInLayout]) {
+     return;
+  }
 
+  CSSNodeRef node = [view cssNode];
   const CGPoint topLeft = {
     CSSNodeLayoutGetLeft(node),
     CSSNodeLayoutGetTop(node),
@@ -291,19 +329,19 @@ static void _updateFrameRecursive(UIView *view) {
 
   view.frame = (CGRect) {
     .origin = {
-      .x = _roundPixelValue(topLeft.x),
-      .y = _roundPixelValue(topLeft.y),
+      .x = CSSRoundPixelValue(topLeft.x),
+      .y = CSSRoundPixelValue(topLeft.y),
     },
     .size = {
-      .width = _roundPixelValue(bottomRight.x) - _roundPixelValue(topLeft.x),
-      .height = _roundPixelValue(bottomRight.y) - _roundPixelValue(topLeft.y),
+      .width = CSSRoundPixelValue(bottomRight.x) - CSSRoundPixelValue(topLeft.x),
+      .height = CSSRoundPixelValue(bottomRight.y) - CSSRoundPixelValue(topLeft.y),
     },
   };
 
   const BOOL isLeaf = ![view css_usesFlexbox] || view.subviews.count == 0;
   if (!isLeaf) {
     for (NSUInteger i = 0; i < view.subviews.count; i++) {
-      _updateFrameRecursive(view.subviews[i]);
+      CSSApplyLayoutToViewHierarchy(view.subviews[i]);
     }
   }
 }

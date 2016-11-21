@@ -13,7 +13,7 @@ using Unity.Bindings;
 
 namespace UnityEngine.CSSLayout
 {
-    [NativeType(Header = "External/CSSLayout/CSSLayout.h")]
+	[NativeType(Header = "External/CSSLayout/CSSLayout/CSSLayout.h")]
     internal static partial class Native
     {
 #if UNITY_IOS && !UNITY_EDITOR
@@ -23,16 +23,11 @@ namespace UnityEngine.CSSLayout
 #endif
 
 // BEGIN_UNITY
-// TODO we don't support the logging & assert feature yet
+// TODO we don't support the logging feature yet
 //         [DllImport(DllName)]
 //         public static extern void CSSInteropSetLogger(
 //             [MarshalAs(UnmanagedType.FunctionPtr)] CSSLogger.Func func);
-// 
-//         [DllImport(DllName)]
-//         public static extern void CSSAssertSetFailFunc(
-//             [MarshalAs(UnmanagedType.FunctionPtr)] CSSAssert.FailFunc func);
 // END_UNITY
-
         [NativeMethod(IsFreeFunction = true)]
         public static extern IntPtr CSSNodeNew();
 
@@ -47,6 +42,15 @@ namespace UnityEngine.CSSLayout
 
         [NativeMethod(IsFreeFunction = true)]
         public static extern int CSSNodeGetInstanceCount();
+
+        [NativeMethod(IsFreeFunction = true)]
+        public static extern void CSSLayoutSetExperimentalFeatureEnabled(
+            CSSExperimentalFeature feature,
+            bool enabled);
+
+        [NativeMethod(IsFreeFunction = true)]
+        public static extern bool CSSLayoutIsExperimentalFeatureEnabled(
+            CSSExperimentalFeature feature);
 
         [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeInsertChild(IntPtr node, IntPtr child, uint index);
@@ -78,6 +82,9 @@ namespace UnityEngine.CSSLayout
         [NativeMethod(IsFreeFunction = true)]
         public static extern bool CSSValueIsUndefined(float value);
 
+        [NativeMethod(IsFreeFunction = true)]
+        public static extern void CSSNodeCopyStyle(IntPtr dstNode, IntPtr srcNode);
+
         #region CSS_NODE_PROPERTY
 
         [NativeMethod(IsFreeFunction = true)]
@@ -96,12 +103,6 @@ namespace UnityEngine.CSSLayout
 //      [return: MarshalAs(UnmanagedType.FunctionPtr)]
 //         public static extern CSSMeasureFunc CSSNodeGetMeasureFunc(IntPtr node);
 // END_UNITY
-
-        [NativeMethod(IsFreeFunction = true)]
-        public static extern void CSSNodeSetIsTextnode(IntPtr node, bool isTextNode);
-
-        [NativeMethod(IsFreeFunction = true)]
-        public static extern bool CSSNodeGetIsTextnode(IntPtr node);
 
         [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeSetHasNewLayout(IntPtr node, bool hasNewLayout);

@@ -17,7 +17,7 @@ static CSSSize _measureMax(CSSNodeRef node,
                         CSSMeasureMode heightMode) {
 
   int *measureCount = (int *)CSSNodeGetContext(node);
-  *measureCount = *measureCount + 1;
+  (*measureCount)++;
   // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
 //  return CSSSize {
 //      .width = widthMode == CSSMeasureModeUndefined ? 10 : width,

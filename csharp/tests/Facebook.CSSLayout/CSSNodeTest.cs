@@ -9,6 +9,10 @@
 
 using NUnit.Framework;
 using System;
+
+/**
+ * Tests for {@link CSSNode}.
+ */
 // BEGIN-UNITY
 using UnityEngine.CSSLayout;
 
@@ -73,7 +77,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(0, parent.Count);
         }
 
-// BEGIN_UNITY
+// BEGIN_UNITY @joce 11-21-2016 TestsForC# 
 #if !UNITY_EDITOR // we don't currently support this library's assert system
 // END_UNITY
         [Test]
@@ -105,7 +109,7 @@ namespace CSSLayoutTests
             parent1.Insert(0, child);
             parent2.Insert(0, child);
         }
-// BEGIN_UNITY
+// BEGIN_UNITY @joce 11-21-2016 TestsForC# 
 #endif
 // END_UNITY
 
@@ -119,7 +123,7 @@ namespace CSSLayoutTests
             Assert.AreEqual(instanceCount + 1, CSSNode.GetInstanceCount());
         }
 
-// BEGIN_UNITY
+// BEGIN_UNITY @joce 11-21-2016 TestsForC# 
 #if !UNITY_EDITOR // we don't currently support this library's assert system
 // END_UNITY
         [Test]
@@ -141,7 +145,7 @@ namespace CSSLayoutTests
             parent.Insert(0, child);
             child.Reset();
         }
-// BEGIN_UNITY
+// BEGIN_UNITY @joce 11-21-2016 TestsForC# 
 #endif
 // END_UNITY
 
@@ -162,8 +166,8 @@ namespace CSSLayoutTests
             Assert.AreEqual(instanceCount + 2, CSSNode.GetInstanceCount());
         }
 
-// BEGIN_UNITY
-#if !UNITY_EDITOR // we don't currently support custom measurement
+// BEGIN_UNITY @joce 11-21-2016 TestsForC# 
+#if !UNITY_EDITOR // we don't currently support this library's assert system
 // END_UNITY
 
         [Test]
@@ -174,8 +178,44 @@ namespace CSSLayoutTests
                 return MeasureOutput.Make(100, 150);
             });
             node.CalculateLayout();
-            Assert.AreEqual(100, (int)node.LayoutWidth);
-            Assert.AreEqual(150, (int)node.LayoutHeight);
+            Assert.AreEqual(100, node.LayoutWidth);
+            Assert.AreEqual(150, node.LayoutHeight);
+        }
+
+        [Test]
+        public void TestMeasureFuncWithFloat()
+        {
+            CSSNode node = new CSSNode();
+            node.SetMeasureFunction((_, width, widthMode, height, heightMode) => {
+                return MeasureOutput.Make(123.4f, 81.7f);
+            });
+            node.CalculateLayout();
+            Assert.AreEqual(123, node.LayoutWidth);
+            Assert.AreEqual(81, node.LayoutHeight);
+        }
+
+        [Test]
+        [ExpectedException("System.InvalidOperationException")]
+        public void TestChildWithMeasureFunc()
+        {
+            CSSNode node = new CSSNode();
+            node.SetMeasureFunction((_, width, widthMode, height, heightMode) => {
+                return MeasureOutput.Make(100, 150);
+            });
+            CSSNode child = new CSSNode();
+            node.Insert(0, child);
+        }
+
+        [Test]
+        [ExpectedException("System.InvalidOperationException")]
+        public void TestMeasureFuncWithChild()
+        {
+            CSSNode node = new CSSNode();
+            CSSNode child = new CSSNode();
+            node.Insert(0, child);
+            node.SetMeasureFunction((_, width, widthMode, height, heightMode) => {
+                return MeasureOutput.Make(100, 150);
+            });
         }
 
         [Test]
@@ -195,16 +235,31 @@ namespace CSSLayoutTests
             parent.CalculateLayout();
             Assert.AreEqual(parent.Print(), "{layout: {width: 100, height: 120, top: 0, left: 0}, flexDirection: 'column', alignItems: 'stretch', flexGrow: 0, flexShrink: 0, overflow: 'visible', width: 100, height: 120, children: [\n  {layout: {width: 35, height: 45, top: 0, left: 0}, flexDirection: 'column', alignItems: 'stretch', flexGrow: 0, flexShrink: 0, overflow: 'visible', width: 35, height: 45, },\n  {layout: {width: 30, height: 40, top: 45, left: 0}, flexDirection: 'column', alignItems: 'stretch', flexGrow: 0, flexShrink: 0, overflow: 'visible', width: 30, height: 40, },\n]},\n");
         }
-// BEGIN_UNITY
+
+// BEGIN_UNITY @joce 11-21-2016 TestsForC# 
 #endif
 // END_UNITY
+
+        [Test]
+        public void TestCopyStyle()
+        {
+            CSSNode node0 = new CSSNode();
+            Assert.IsTrue(CSSConstants.IsUndefined(node0.StyleMaxHeight));
+
+            CSSNode node1 = new CSSNode();
+            node1.StyleMaxHeight = 100;
+
+            node0.CopyStyle(node1);
+            Assert.AreEqual(100, node0.StyleMaxHeight);
+        }
+
+#if !UNITY_EDITOR
         private void ForceGC()
         {
             GC.Collect(GC.MaxGeneration);
             GC.WaitForPendingFinalizers();
         }
 
-#if !UNITY_EDITOR // note this was already excluded in the initial implementation
         [Test]
         public void TestDestructor()
         {

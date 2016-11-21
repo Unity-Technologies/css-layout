@@ -9,6 +9,10 @@
 
 #include "CSSNodeList.h"
 
+extern CSSMalloc gCSSMalloc;
+extern CSSRealloc gCSSRealloc;
+extern CSSFree gCSSFree;
+
 struct CSSNodeList {
   uint32_t capacity;
   uint32_t count;
@@ -17,17 +21,16 @@ struct CSSNodeList {
 
 CSSNodeListRef CSSNodeListNew(const uint32_t initialCapacity) {
   // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
-  //const CSSNodeListRef list = malloc(sizeof(struct CSSNodeList));
-  const CSSNodeListRef list = (CSSNodeListRef)malloc(sizeof(struct CSSNodeList));
+  //const CSSNodeListRef list = gCSSMalloc(sizeof(struct CSSNodeList));
+  const CSSNodeListRef list = (CSSNodeListRef)gCSSMalloc(sizeof(struct CSSNodeList));
   // END_UNITY
-
   CSS_ASSERT(list != NULL, "Could not allocate memory for list");
 
   list->capacity = initialCapacity;
   list->count = 0;
   // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
-  //list->items = malloc(sizeof(CSSNodeRef) * list->capacity);
-  list->items = (CSSNodeRef*)malloc(sizeof(CSSNodeRef) * list->capacity);
+  //list->items = gCSSMalloc(sizeof(CSSNodeRef) * list->capacity);
+  list->items = (CSSNodeRef*)gCSSMalloc(sizeof(CSSNodeRef) * list->capacity);
   // END_UNITY
   CSS_ASSERT(list->items != NULL, "Could not allocate memory for items");
 
@@ -36,8 +39,8 @@ CSSNodeListRef CSSNodeListNew(const uint32_t initialCapacity) {
 
 void CSSNodeListFree(const CSSNodeListRef list) {
   if (list) {
-    free(list->items);
-    free(list);
+    gCSSFree(list->items);
+    gCSSFree(list);
   }
 }
 
@@ -64,8 +67,8 @@ void CSSNodeListInsert(CSSNodeListRef *listp, const CSSNodeRef node, const uint3
   if (list->count == list->capacity) {
     list->capacity *= 2;
     // BEGIN_UNITY @joce 10-26-2016 CompileForVS2010
-    //list->items = realloc(list->items, sizeof(CSSNodeRef) * list->capacity);
-    list->items = (CSSNodeRef*)realloc(list->items, sizeof(void *) * list->capacity);
+    //list->items = gCSSRealloc(list->items, sizeof(CSSNodeRef) * list->capacity);
+    list->items = (CSSNodeRef*)gCSSRealloc(list->items, sizeof(void *) * list->capacity);
     // END_UNITY
     CSS_ASSERT(list->items != NULL, "Could not extend allocation for items");
   }
@@ -83,7 +86,6 @@ CSSNodeRef CSSNodeListRemove(const CSSNodeListRef list, const uint32_t index) {
   //const CSSNodeRef removed = list->items[index];
   const CSSNodeRef removed = (CSSNodeRef)list->items[index];
   // END_UNITY
-
   list->items[index] = NULL;
 
   for (uint32_t i = index; i < list->count - 1; i++) {
