@@ -295,7 +295,7 @@ namespace UnityEngine.CSSLayout
             Native.CSSNodeStyleSetPosition(_cssNode, edge, position);
         }
 
-        public float StyleWidth
+        public float Width
         {
             get
             {
@@ -308,7 +308,7 @@ namespace UnityEngine.CSSLayout
             }
         }
 
-        public float StyleHeight
+        public float Height
         {
             get
             {
@@ -321,7 +321,7 @@ namespace UnityEngine.CSSLayout
             }
         }
 
-        public float StyleMaxWidth
+        public float MaxWidth
         {
             get
             {
@@ -334,7 +334,7 @@ namespace UnityEngine.CSSLayout
             }
         }
 
-        public float StyleMaxHeight
+        public float MaxHeight
         {
             get
             {
@@ -347,7 +347,7 @@ namespace UnityEngine.CSSLayout
             }
         }
 
-        public float StyleMinWidth
+        public float MinWidth
         {
             get
             {
@@ -360,7 +360,7 @@ namespace UnityEngine.CSSLayout
             }
         }
 
-        public float StyleMinHeight
+        public float MinHeight
         {
             get
             {
@@ -370,6 +370,19 @@ namespace UnityEngine.CSSLayout
             set
             {
                 Native.CSSNodeStyleSetMinHeight(_cssNode, value);
+            }
+        }
+
+        public float AspectRatio
+        {
+            get
+            {
+                return Native.CSSNodeStyleGetAspectRatio(_cssNode);
+            }
+
+            set
+            {
+                Native.CSSNodeStyleSetAspectRatio(_cssNode, value);
             }
         }
 
@@ -576,14 +589,14 @@ namespace UnityEngine.CSSLayout
             return Native.CSSNodeGetInstanceCount();
         }
 
-        public static void setExperimentalFeatureEnabled(
+        public static void SetExperimentalFeatureEnabled(
             CSSExperimentalFeature feature,
             bool enabled)
         {
             Native.CSSLayoutSetExperimentalFeatureEnabled(feature, enabled);
         }
 
-        public static bool isExperimentalFeatureEnabled(CSSExperimentalFeature feature)
+        public static bool IsExperimentalFeatureEnabled(CSSExperimentalFeature feature)
         {
             return Native.CSSLayoutIsExperimentalFeatureEnabled(feature);
         }

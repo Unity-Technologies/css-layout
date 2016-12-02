@@ -46,6 +46,9 @@
 - (void)css_setMaxWidth:(CGFloat)maxWidth;
 - (void)css_setMaxHeight:(CGFloat)maxHeight;
 
+// Yoga specific properties, not compatible with flexbox specification
+- (void)css_setAspectRatio:(CGFloat)aspectRatio;
+
 /**
  Get the resolved direction of this node. This won't be CSSDirectionInherit
  */
@@ -60,5 +63,10 @@
  Returns the size of the view if no constraints were given. This could equivalent to calling [self sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
  */
 - (CGSize)css_intrinsicSize;
+
+/**
+ Returns the number of children that are using Flexbox.
+ */
+- (NSUInteger)css_numberOfChildren;
 
 @end

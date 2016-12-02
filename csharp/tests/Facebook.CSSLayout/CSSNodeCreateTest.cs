@@ -92,12 +92,12 @@ namespace CSSLayoutTests
                 padding: new Spacing(top: 13, bottom: 14, left: 15, right: 16),
                 border: new Spacing(top: 17, bottom: 18, left: 19, right: 20),
 
-                styleWidth: 21,
-                styleHeight: 22,
-                styleMinWidth: 23,
-                styleMinHeight: 24,
-                styleMaxWidth: 25,
-                styleMaxHeight: 26);
+                width: 21,
+                height: 22,
+                minWidth: 23,
+                minHeight: 24,
+                maxWidth: 25,
+                maxHeight: 26);
 
             Assert.AreEqual(CSSDirection.RTL, node.StyleDirection);
             Assert.AreEqual(CSSFlexDirection.RowReverse, node.FlexDirection);
@@ -137,12 +137,12 @@ namespace CSSLayoutTests
             Assert.AreEqual(19, node.GetBorder(CSSEdge.Left));
             Assert.AreEqual(20, node.GetBorder(CSSEdge.Right));
 
-            Assert.AreEqual(21, node.StyleWidth);
-            Assert.AreEqual(22, node.StyleHeight);
-            Assert.AreEqual(23, node.StyleMinWidth);
-            Assert.AreEqual(24, node.StyleMinHeight);
-            Assert.AreEqual(25, node.StyleMaxWidth);
-            Assert.AreEqual(26, node.StyleMaxHeight);
+            Assert.AreEqual(21, node.Width);
+            Assert.AreEqual(22, node.Height);
+            Assert.AreEqual(23, node.MinWidth);
+            Assert.AreEqual(24, node.MinHeight);
+            Assert.AreEqual(25, node.MaxWidth);
+            Assert.AreEqual(26, node.MaxHeight);
         }
     }
 }

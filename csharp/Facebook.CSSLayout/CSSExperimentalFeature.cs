@@ -14,5 +14,7 @@ namespace UnityEngine.CSSLayout
 {
     public enum CSSExperimentalFeature
     {
+        Rounding,
+        WebFlexBasis,
     }
 }
