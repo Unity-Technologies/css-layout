@@ -2706,11 +2706,14 @@ void CSSLog(CSSLogLevel level, const char *format, ...) {
 
 static bool experimentalFeatures[CSSExperimentalFeatureCount + 1];
 
+// BEGIN_UNITY @patrickf 12-02-2016 Remove inline to make function available in library.
+//inline void CSSLayoutSetExperimentalFeatureEnabled(CSSExperimentalFeature feature, bool enabled) {
 void CSSLayoutSetExperimentalFeatureEnabled(CSSExperimentalFeature feature, bool enabled) {
+// END_UNITY
   experimentalFeatures[feature] = enabled;
 }
 
-inline bool CSSLayoutIsExperimentalFeatureEnabled(CSSExperimentalFeature feature) {
+bool CSSLayoutIsExperimentalFeatureEnabled(CSSExperimentalFeature feature) {
   return experimentalFeatures[feature];
 }
 
