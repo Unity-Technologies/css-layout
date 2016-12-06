@@ -38,7 +38,7 @@ __forceinline const float fminf(const float a, const float b) {
 // END_UNITY
 #endif
 // BEGIN_UNITY @patrickf 12-02-2016 roundf is C++11
-#if (defined(_MSC_VER) && _MSC_VER < 1700)
+#if (defined(_MSC_VER) && _MSC_VER < 1700) || defined(_N3DS)
 __forceinline float roundf(float a) {
   return floor(a + .5f);
 }

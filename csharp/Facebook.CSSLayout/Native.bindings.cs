@@ -225,10 +225,10 @@ namespace UnityEngine.CSSLayout
         [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetMaxHeight(IntPtr node);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern void CSSNodeStyleSetAspectRatio(IntPtr node, float aspectRatio);
 
-        [DllImport(DllName)]
+        [NativeMethod(IsFreeFunction = true)]
         public static extern float CSSNodeStyleGetAspectRatio(IntPtr node);
 
         #endregion

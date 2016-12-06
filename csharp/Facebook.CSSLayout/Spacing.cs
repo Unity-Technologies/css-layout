@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public class Spacing
+    internal class Spacing
     {
         public float? Top;
         public float? Bottom;

@@ -12,7 +12,7 @@
 namespace UnityEngine.CSSLayout
 // END_UNITY
 {
-    public enum CSSLogLevel
+    internal enum CSSLogLevel
     {
         Error,
         Warn,
