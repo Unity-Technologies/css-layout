@@ -20,6 +20,7 @@ using UnityEngine.CSSLayout;
 namespace CSSLayoutTests
 // END-UNITY
 {
+#if ENABLE_CS_OPT_ARGS // Optional C# arguments are not supported by some Unity builds
     [TestFixture]
     public class CSSNodeCreateTest
     {
@@ -145,4 +146,5 @@ namespace CSSLayoutTests
             Assert.AreEqual(26, node.MaxHeight);
         }
     }
+#endif //ENABLE_CS_OPT_ARGS
 }

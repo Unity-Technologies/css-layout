@@ -11,8 +11,12 @@
 
 using System;
 using NUnit.Framework;
+// BEGIN-UNITY
+using UnityEngine.CSSLayout;
 
-namespace Facebook.CSSLayout
+// namespace Facebook.CSSLayout
+// END-UNITY
+namespace CSSLayoutTests
 {
     [TestFixture]
     public class CSSLayoutRoundingTest

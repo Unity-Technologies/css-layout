@@ -19,6 +19,7 @@ namespace UnityEngine.CSSLayout
     internal partial class CSSNode
 // END_UNITY
     {
+#if ENABLE_CS_OPT_ARGS // Optional C# arguments are not supported by some Unity builds
         public static CSSNode Create(
             CSSDirection? styleDirection = null,
             CSSFlexDirection? flexDirection = null,
@@ -241,5 +242,6 @@ namespace UnityEngine.CSSLayout
 
             return node;
         }
+#endif //ENABLE_CS_OPT_ARGS
     }
 }
