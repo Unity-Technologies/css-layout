@@ -65,7 +65,9 @@ WIN_EXPORT void CSSNodeInsertChild(const CSSNodeRef node,
                                    const uint32_t index);
 WIN_EXPORT void CSSNodeRemoveChild(const CSSNodeRef node, const CSSNodeRef child);
 WIN_EXPORT CSSNodeRef CSSNodeGetChild(const CSSNodeRef node, const uint32_t index);
+WIN_EXPORT void CSSNodeRemoveChildAt(const CSSNodeRef node, const uint32_t index);
 WIN_EXPORT uint32_t CSSNodeChildCount(const CSSNodeRef node);
+WIN_EXPORT CSSNodeRef CSSNodeGetParent(const CSSNodeRef node);
 
 WIN_EXPORT void CSSNodeCalculateLayout(const CSSNodeRef node,
                                        const float availableWidth,

@@ -360,6 +360,16 @@ void CSSNodeRemoveChild(const CSSNodeRef node, const CSSNodeRef child) {
   }
 }
 
+void CSSNodeRemoveChildAt(const CSSNodeRef node, const uint32_t index)
+{
+    CSSNodeRef child = CSSNodeListRemove(node->children, index);
+    if (child != NULL)
+    {
+        child->parent = NULL;
+        _CSSNodeMarkDirty(node);
+    }
+}
+
 CSSNodeRef CSSNodeGetChild(const CSSNodeRef node, const uint32_t index) {
   return CSSNodeListGet(node->children, index);
 }
@@ -369,6 +379,11 @@ CSSNodeRef CSSNodeGetChild(const CSSNodeRef node, const uint32_t index) {
 uint32_t CSSNodeChildCount(const CSSNodeRef node) {
 // END_UNITY
   return CSSNodeListCount(node->children);
+}
+
+CSSNodeRef CSSNodeGetParent(const CSSNodeRef node)
+{
+    return node->parent;
 }
 
 void CSSNodeMarkDirty(const CSSNodeRef node) {
