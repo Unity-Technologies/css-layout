@@ -17,7 +17,10 @@
 #define CSS_EXTERN_C_END
 #endif
 
-#ifdef _WINDLL
+// BEGIN_UNITY @joce 11-01-2016 DontExportSymbols
+//#ifdef _WINDLL
+#if defined(_WINDLL) && !defined(UNITY_EDITOR)
+// END_UNITY
 #define WIN_EXPORT __declspec(dllexport)
 #else
 #define WIN_EXPORT
